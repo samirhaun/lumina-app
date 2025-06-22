@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\App; // 
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // ADICIONE ESTA LINHA PARA FORÇAR O IDIOMA EM TODA A APLICAÇÃO
+        App::setLocale(config('app.locale'));
     }
 }
