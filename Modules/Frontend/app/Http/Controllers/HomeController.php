@@ -7,6 +7,7 @@ namespace Modules\Frontend\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 
+
 class HomeController extends Controller
 {
     public function index()
