@@ -1,41 +1,39 @@
-@extends('frontend::layouts.layout')
+<?php $__env->startSection('title', 'Página Inicial'); ?>
 
-@section('title', 'Página Inicial')
+<?php $__env->startSection('content'); ?>
 
-@section('content')
-
-    {{-- Hero full-width --}}
+    
     <div class="container-fluid px-0">
         <section id="heroCarousel" class="carousel slide hero-section" data-bs-ride="carousel">
 
-            {{-- 1) Carousel Indicators --}}
+            
             <div class="carousel-indicators">
-                @foreach ($heroes as $i => $hero)
-                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $i }}"
-                        class="{{ $i === 0 ? 'active' : '' }}" aria-current="{{ $i === 0 ? 'true' : '' }}"
-                        aria-label="Slide {{ $i + 1 }}">
+                <?php $__currentLoopData = $heroes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $hero): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="<?php echo e($i); ?>"
+                        class="<?php echo e($i === 0 ? 'active' : ''); ?>" aria-current="<?php echo e($i === 0 ? 'true' : ''); ?>"
+                        aria-label="Slide <?php echo e($i + 1); ?>">
                     </button>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
 
-            {{-- 2) Slides --}}
+            
             <div class="carousel-inner">
-                @forelse($heroes as $i => $hero)
-                    <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
-                        <a href="{{ $hero->link_url ?: '#' }}">
-                            <img src="{{ Storage::url($hero->image_path) }}" class="d-block w-100"
-                                alt="Banner {{ $i + 1 }}">
+                <?php $__empty_1 = true; $__currentLoopData = $heroes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $hero): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <div class="carousel-item <?php echo e($i === 0 ? 'active' : ''); ?>">
+                        <a href="<?php echo e($hero->link_url ?: '#'); ?>">
+                            <img src="<?php echo e(Storage::url($hero->image_path)); ?>" class="d-block w-100"
+                                alt="Banner <?php echo e($i + 1); ?>">
                         </a>
                     </div>
-                @empty
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <div class="carousel-item active">
-                        <img src="{{ asset('images/default-banner.png') }}" class="d-block w-100" alt="Banner padrão">
+                        <img src="<?php echo e(asset('images/default-banner.png')); ?>" class="d-block w-100" alt="Banner padrão">
                     </div>
-                @endforelse
+                <?php endif; ?>
             </div>
 
-            {{-- 3) Controles de Navegação (opcional) --}}
-            @if ($heroes->count() > 1)
+            
+            <?php if($heroes->count() > 1): ?>
                 <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
                     <span class="carousel-control-icon-circle">
                         <i class="fas fa-chevron-left"></i>
@@ -49,17 +47,17 @@
                     </span>
                     <span class="visually-hidden">Próximo</span>
                 </button>
-            @endif
+            <?php endif; ?>
 
         </section>
     </div>
 
-    {{-- Benefícios --}}
+    
     <section class="benefits bg-white py-4 mt-5">
         <div class="container">
             <div class="row text-center align-items-center">
 
-                {{-- Frete Grátis --}}
+                
                 <div class="col-md-4 d-flex align-items-center justify-content-center py-2">
                     <i class="fas fa-truck fa-2x me-3 text-terracota"></i>
                     <div>
@@ -68,7 +66,7 @@
                     </div>
                 </div>
 
-                {{-- Pague como preferir --}}
+                
                 <div class="col-md-4 py-2">
                     <div
                         class="d-flex align-items-center justify-content-center
@@ -81,7 +79,7 @@
                     </div>
                 </div>
 
-                {{-- Dúvidas? --}}
+                
                 <div class="col-md-4 d-flex align-items-center justify-content-center py-2">
                     <i class="fab fa-whatsapp fa-2x me-3 text-terracota"></i>
                     <div>
@@ -98,13 +96,13 @@
         </div>
     </section>
 
-{{-- Todos os Produtos --}}
-{{-- Todos os Produtos --}}
+
+
 <section id="todos-produtos" class="container py-5">
     <h2 class="section-title section-title-alt">Todos os Produtos</h2>
     <div class="row g-4 justify-content-center">
-        @foreach ($products as $p)
-            @php
+        <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php
                 $productImagesCollection = $imagesByProduct[$p->id] ?? collect();
 
                 // --- CORREÇÃO APLICADA AQUI ---
@@ -113,46 +111,48 @@
                 $allImageUrls = $productImagesCollection->pluck('image_url')->map(fn($path) => asset($path));
 
                 $primaryImgUrl = $allImageUrls->first() ?? asset('images/placeholder.png');
-            @endphp
+            ?>
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card product-card-v2 h-100" data-images='{{ $allImageUrls->toJson() }}'>
+                <div class="card product-card-v2 h-100" data-images='<?php echo e($allImageUrls->toJson()); ?>'>
                     <div class="card-top-border"></div>
 
-                    <a href="{{ route('frontend.products.show', $p->id) }}" class="card-img-link">
-                        <img src="{{ $primaryImgUrl }}" class="card-img-top" alt="{{ $p->name }}">
+                    <a href="<?php echo e(route('frontend.products.show', $p->id)); ?>" class="card-img-link">
+                        <img src="<?php echo e($primaryImgUrl); ?>" class="card-img-top" alt="<?php echo e($p->name); ?>">
                     </a>
                     <div class="card-body d-flex flex-column text-center">
                         <h5 class="card-title">
-                            <a href="{{ route('frontend.products.show', $p->id) }}"
+                            <a href="<?php echo e(route('frontend.products.show', $p->id)); ?>"
                                 class="stretched-link text-dark text-decoration-none">
-                                {{ \Illuminate\Support\Str::limit($p->name, 40) }}
+                                <?php echo e(\Illuminate\Support\Str::limit($p->name, 40)); ?>
+
                             </a>
                         </h5>
 
-                        @if($p->code)
-                            <p class="product-code">Cód: {{ $p->code }}</p>
-                        @endif
+                        <?php if($p->code): ?>
+                            <p class="product-code">Cód: <?php echo e($p->code); ?></p>
+                        <?php endif; ?>
 
                         <p class="card-price">
-                            R$ {{ number_format($p->sale_price, 2, ',', '.') }}
+                            R$ <?php echo e(number_format($p->sale_price, 2, ',', '.')); ?>
+
                         </p>
 
                         <div class="installment-box">
-                            3x de R$ {{ number_format($p->sale_price / 3, 2, ',', '.') }} sem juros
+                            3x de R$ <?php echo e(number_format($p->sale_price / 3, 2, ',', '.')); ?> sem juros
                         </div>
 
-                        <a href="{{ route('frontend.products.show', $p->id) }}" class="btn btn-custom-brown mt-auto">
+                        <a href="<?php echo e(route('frontend.products.show', $p->id)); ?>" class="btn btn-custom-brown mt-auto">
                             VER MAIS
                         </a>
                     </div>
                 </div>
             </div>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
         $(function() {
             $(document).on('click', '.btn-add-to-cart', function(e) {
@@ -162,11 +162,11 @@
                     id = btn.data('id'),
                     orig = btn.html();
                 btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
-                $.post("{{ route('cart.add') }}", {
-                    _token: '{{ csrf_token() }}',
+                $.post("<?php echo e(route('cart.add')); ?>", {
+                    _token: '<?php echo e(csrf_token()); ?>',
                     product_id: id
                 }).done(res => {
-                    window.location.href = "{{ route('cart.index') }}";
+                    window.location.href = "<?php echo e(route('cart.index')); ?>";
                 }).fail(() => {
                     Swal.fire('Erro!', 'Não foi possível adicionar.', 'error');
                 }).always(() => {
@@ -175,7 +175,7 @@
             });
         });
     </script>
-    @push('scripts')
+    <?php $__env->startPush('scripts'); ?>
     <script>
         $(function() {
             // Script de adicionar ao carrinho (se existir) pode ficar aqui...
@@ -229,5 +229,7 @@
             });
         });
     </script>
-@endpush
-@endpush
+<?php $__env->stopPush(); ?>
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('frontend::layouts.layout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Bruno\Documents\lumina-app\lumina-app\Modules/Frontend\resources/views/home.blade.php ENDPATH**/ ?>

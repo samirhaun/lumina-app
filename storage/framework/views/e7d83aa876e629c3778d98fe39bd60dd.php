@@ -1,9 +1,6 @@
-{{-- resources/views/frontend/products/show.blade.php --}}
-@extends('frontend::layouts.layout')
+<?php $__env->startSection('title', $product->name); ?>
 
-@section('title', $product->name)
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
     <style>
         :root {
             --terracota: #A0522D;
@@ -250,39 +247,40 @@
             /* Empurra a notificação 5rem para baixo */
         }
     </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <main class="container py-5">
-        {{-- Breadcrumb --}}
+        
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('frontend.home') }}">Início</a></li>
+                <li class="breadcrumb-item"><a href="<?php echo e(route('frontend.home')); ?>">Início</a></li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('frontend.products.index', ['type' => $product->product_type_id]) }}">
-                        {{ $product->type_name }}
+                    <a href="<?php echo e(route('frontend.products.index', ['type' => $product->product_type_id])); ?>">
+                        <?php echo e($product->type_name); ?>
+
                     </a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">{{ $product->name }}</li>
+                <li class="breadcrumb-item active" aria-current="page"><?php echo e($product->name); ?></li>
             </ol>
         </nav>
 
         <div class="row gx-5">
-            {{-- GALERIA --}}
+            
             <div class="col-lg-6">
                 <div id="productGallery" class="carousel slide carousel-fade main-image-wrapper" data-bs-ride="carousel">
                     <div class="carousel-inner">
-                        @forelse($productImages as $img)
-                            <div class="carousel-item @if ($loop->first) active @endif">
-                                <img src="{{ $img->image_url }}" class="d-block w-100" alt="Foto {{ $loop->iteration }}">
+                        <?php $__empty_1 = true; $__currentLoopData = $productImages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $img): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <div class="carousel-item <?php if($loop->first): ?> active <?php endif; ?>">
+                                <img src="<?php echo e($img->image_url); ?>" class="d-block w-100" alt="Foto <?php echo e($loop->iteration); ?>">
                             </div>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <div class="carousel-item active">
-                                <img src="{{ asset('images/placeholder.png') }}" class="d-block w-100" alt="Sem imagem">
+                                <img src="<?php echo e(asset('images/placeholder.png')); ?>" class="d-block w-100" alt="Sem imagem">
                             </div>
-                        @endforelse
+                        <?php endif; ?>
                     </div>
-                    @if ($productImages->count() > 1)
+                    <?php if($productImages->count() > 1): ?>
                         <button class="carousel-control-prev" type="button" data-bs-target="#productGallery"
                             data-bs-slide="prev">
                             <span class="carousel-control-icon-circle">
@@ -297,58 +295,59 @@
                             </span>
                             <span class="visually-hidden">Próximo</span>
                         </button>
-                    @endif
+                    <?php endif; ?>
                 </div>
 
-                @if ($productImages->count() > 1)
+                <?php if($productImages->count() > 1): ?>
                     <div class="row gallery-thumbnails gx-2 mt-3">
-                        @foreach ($productImages as $img)
+                        <?php $__currentLoopData = $productImages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $img): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="col-3 p-1">
-                                <img src="{{ $img->image_url }}" data-bs-target="#productGallery"
-                                    data-bs-slide-to="{{ $loop->index }}"
-                                    class="img-fluid thumbnail-image @if ($loop->first) active @endif"
-                                    alt="Miniatura {{ $loop->iteration }}">
+                                <img src="<?php echo e($img->image_url); ?>" data-bs-target="#productGallery"
+                                    data-bs-slide-to="<?php echo e($loop->index); ?>"
+                                    class="img-fluid thumbnail-image <?php if($loop->first): ?> active <?php endif; ?>"
+                                    alt="Miniatura <?php echo e($loop->iteration); ?>">
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
 
-            {{-- PAINEL DE INFORMAÇÕES --}}
+            
             <div class="col-lg-6">
                 <div class="info-panel">
-                    {{-- Nome do produto dentro do card --}}
-                    <h3>{{ $product->name }}</h3>
+                    
+                    <h3><?php echo e($product->name); ?></h3>
 
-                    @if ($product->code)
+                    <?php if($product->code): ?>
                         <div class="sku-badge">
                             <i class="fas fa-barcode"></i>
-                            <span>Cód: {{ $product->code }}</span>
+                            <span>Cód: <?php echo e($product->code); ?></span>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
-                    {{-- Preço --}}
-                    <h2 class="price">R$ {{ number_format($product->sale_price, 2, ',', '.') }}</h2>
+                    
+                    <h2 class="price">R$ <?php echo e(number_format($product->sale_price, 2, ',', '.')); ?></h2>
 
-                    {{-- Parcelamento --}}
-                    @php $inst = $product->sale_price/3; @endphp
+                    
+                    <?php $inst = $product->sale_price/3; ?>
                     <div class="installments">
-                        ou 3× de <span>R${{ number_format($inst, 2, ',', '.') }}</span> sem juros
+                        ou 3× de <span>R$<?php echo e(number_format($inst, 2, ',', '.')); ?></span> sem juros
                     </div>
 
-                    {{-- Descrição curta --}}
+                    
                     <p class="short-desc">
-                        @php
+                        <?php
                             // Apenas decodifica entidades e remove tags
                             $cleanDescription = html_entity_decode(
                                 strip_tags($product->description ?? 'Nenhuma descrição disponível.'),
                             );
-                        @endphp
-                        {{ $cleanDescription }}
+                        ?>
+                        <?php echo e($cleanDescription); ?>
+
                     </p>
 
 
-                    {{-- Meios de pagamento --}}
+                    
                     <div class="payments mb-4">
                         <i class="fab fa-cc-visa"></i>
                         <i class="fab fa-cc-mastercard"></i>
@@ -356,14 +355,14 @@
                         <a href="#" class="small">Ver meios de pagamento</a>
                     </div>
 
-                    {{-- Quantidade + Adicionar ao Carrinho --}}
-                    <div class="d-grid gap-3 mb-4"> {{-- Usamos d-grid para empilhar os elementos --}}
+                    
+                    <div class="d-grid gap-3 mb-4"> 
                         <div class="row g-2 align-items-center">
                             <div class="col-auto">
                                 <label for="quantity" class="form-label mb-0">Quantidade:</label>
                             </div>
                             <div class="col-auto">
-                                {{-- Nosso novo componente "Stepper" --}}
+                                
                                 <div class="quantity-selector">
                                     <button type="button" class="btn-qty btn-minus"
                                         aria-label="Diminuir quantidade">-</button>
@@ -374,14 +373,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="d-grid"> {{-- d-grid para o botão ocupar 100% da largura --}}
-                            <button class="btn btn-terracota btn-lg btn-add-to-cart" data-id="{{ $product->id }}">
+                        <div class="d-grid"> 
+                            <button class="btn btn-terracota btn-lg btn-add-to-cart" data-id="<?php echo e($product->id); ?>">
                                 <i class="fas fa-shopping-cart me-2"></i>Adicionar ao Carrinho
                             </button>
                         </div>
                     </div>
 
-                    {{-- Compartilhar --}}
+                    
                     <div class="share mb-4">
                         <span class="me-2">Compartilhe:</span>
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -389,19 +388,20 @@
                         <a href="#"><i class="fab fa-pinterest"></i></a>
                     </div>
 
-                    {{-- Especificações --}}
+                    
                     <div>
                         <h6>Especificações</h6>
-                        {{-- A sintaxe {!! !!} renderiza o HTML salvo pelo editor TinyMCE --}}
-                        {!! $product->specifications ?? '<ul><li>Nenhuma especificação disponível.</li></ul>' !!}
+                        
+                        <?php echo $product->specifications ?? '<ul><li>Nenhuma especificação disponível.</li></ul>'; ?>
+
                     </div>
                 </div>
             </div>
         </div>
     </main>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
         // thumbnail → slide
         document.querySelectorAll('.thumbnail-image').forEach(img => {
@@ -420,8 +420,8 @@
                 qty = $('#quantity').val(),
                 html = btn.html();
             btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
-            $.post("{{ route('cart.add') }}", {
-                    _token: '{{ csrf_token() }}',
+            $.post("<?php echo e(route('cart.add')); ?>", {
+                    _token: '<?php echo e(csrf_token()); ?>',
                     product_id: id,
                     quantity: qty
                 })
@@ -470,4 +470,6 @@
             }
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('frontend::layouts.layout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Bruno\Documents\lumina-app\lumina-app\Modules/Frontend\resources/views/products/show.blade.php ENDPATH**/ ?>

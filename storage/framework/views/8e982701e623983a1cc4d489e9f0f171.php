@@ -1,8 +1,6 @@
-@extends('admin::layouts.layout')
+<?php $__env->startSection('title', 'Catálogo de Produtos'); ?>
 
-@section('title', 'Catálogo de Produtos')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div id="catalogContent">
 
         <style>
@@ -111,13 +109,14 @@
                                 <li class="nav-item">
                                     <a class="nav-link active" href="#" data-type="">Todos</a>
                                 </li>
-                                @foreach ($productTypes as $type)
+                                <?php $__currentLoopData = $productTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#" data-type="{{ $type->name }}">
-                                            {{ $type->name }}
+                                        <a class="nav-link" href="#" data-type="<?php echo e($type->name); ?>">
+                                            <?php echo e($type->name); ?>
+
                                         </a>
                                     </li>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </ul>
                         </div>
                     </div>
@@ -141,7 +140,7 @@
             </div>
         </div>
 
-{{-- Modal: Tipo de Produto--}}
+
 <div class="modal fade" id="typeModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -150,9 +149,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="typeForm">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <div class="modal-body">
-                    {{-- O ID hidden correto para o tipo --}}
+                    
                     <input type="hidden" id="type_id" name="id">
                     <div class="mb-3">
                         <label for="type_name" class="form-label">Nome do Tipo</label>
@@ -170,7 +169,7 @@
     </div>
 </div>
 
-{{-- Modal: Produto--}}
+
 <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -179,7 +178,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="productForm">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <div class="modal-body">
                     <input type="hidden" id="product_id" name="id">
                     <div class="row">
@@ -197,7 +196,7 @@
                         <select id="product_type_id" name="product_type_id" class="form-select" style="width:100%" required></select>
                     </div>
 
-                    {{-- CAMPOS DE DESCRIÇÃO E ESPECIFICAÇÕES NO LUGAR CERTO --}}
+                    
                     <div class="mb-3">
                         <label for="description" class="form-label">Descrição</label>
                         <textarea id="description" name="description" class="form-control tinymce-editor"></textarea>
@@ -225,9 +224,9 @@
         </div>
     </div>
 </div>
-    </div> {{-- fecha #catalogContent --}}
-@endsection
-@push('scripts')
+    </div> 
+<?php $__env->stopSection(); ?>
+<?php $__env->startPush('scripts'); ?>
     <script src="https://cdn.tiny.cloud/1/45t54fd85pkigdxhieoirre5pbt4xchm5g5sb5z52gxa4q3r/tinymce/7/tinymce.min.js"
         referrerpolicy="origin"></script>
 
@@ -237,7 +236,7 @@
             // --- SETUP GLOBAL ---
             $.ajaxSetup({
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
                 }
             });
 
@@ -262,7 +261,7 @@
                 select.prop('disabled', true).html('<option>Carregando tipos...</option>');
 
                 $.ajax({
-                    url: "{{ route('admin.product-types.list') }}",
+                    url: "<?php echo e(route('admin.product-types.list')); ?>",
                     type: 'GET',
                     success: function(types) {
                         select.empty().append('<option value="">Selecione um tipo...</option>');
@@ -294,7 +293,7 @@
             // --- DATATABLE PARA TIPOS DE PRODUTO ---
             var typesTable = $('#typesTable').DataTable({
                 processing: true,
-                ajax: "{{ route('admin.product-types.data') }}",
+                ajax: "<?php echo e(route('admin.product-types.data')); ?>",
                 columns: [{
                         data: 'id'
                     },
@@ -342,7 +341,7 @@
             // --- DATATABLE PARA PRODUTOS ---
             var productsTable = $('#productsTable').DataTable({
                 processing: true,
-                ajax: "{{ route('admin.products.data') }}",
+                ajax: "<?php echo e(route('admin.products.data')); ?>",
                 columns: [{
                         data: 'id'
                     }, {
@@ -364,7 +363,7 @@
                         searchable: false,
                         render: function(data, type, row) {
                             let imagesUrl =
-                                "{{ route('admin.products.images.index', ['product' => ':id']) }}"
+                                "<?php echo e(route('admin.products.images.index', ['product' => ':id'])); ?>"
                                 .replace(':id', row.id);
 
                             // =================================================================
@@ -442,7 +441,7 @@
                 $('#typeForm')[0].reset();
                 $('#typeModalLabel').text('Novo Tipo de Produto');
                 $('#typeForm').data('method', 'POST').data('url',
-                    '{{ route('admin.product-types.store') }}');
+                    '<?php echo e(route('admin.product-types.store')); ?>');
             });
             $('#typesTable').on('click', '.edit-type-btn', function() {
                 let data = $(this).data();
@@ -450,7 +449,7 @@
                 $('#type_id').val(data.id);
                 $('#type_name').val(data.name);
                 $('#typeForm').data('method', 'PUT').data('url',
-                    `{{ url('admin/product-types') }}/${data.id}`);
+                    `<?php echo e(url('admin/product-types')); ?>/${data.id}`);
                 $('#typeModal').modal('show');
             });
             $('#typeForm').on('submit', function(e) {
@@ -485,7 +484,7 @@
                 }).then(res => {
                     if (!res.isConfirmed) return;
                     $.ajax({
-                        url: `{{ url('admin/product-types') }}/${data.id}`,
+                        url: `<?php echo e(url('admin/product-types')); ?>/${data.id}`,
                         type: 'DELETE',
                         success(resp) {
                             Swal.fire('Excluído!', resp.success, 'success');
@@ -502,7 +501,7 @@
                 $('#productForm')[0].reset();
                 $('#productModalLabel').text('Novo Produto');
                 $('#productForm').data('method', 'POST').data('url',
-                    "{{ route('admin.products.store') }}");
+                    "<?php echo e(route('admin.products.store')); ?>");
                 updateProductTypesDropdown();
                 $('#show_in_store').prop('checked', false);
 
@@ -526,7 +525,7 @@
                 tinymce.get('specifications').setContent(data.specifications);
 
                 $('#productForm').data('method', 'PUT').data('url',
-                    `{{ url('admin/products') }}/${data.id}`);
+                    `<?php echo e(url('admin/products')); ?>/${data.id}`);
                 updateProductTypesDropdown(data.productTypeId);
                 $('#productModal').modal('show');
             });
@@ -568,7 +567,7 @@
                 }).then(res => {
                     if (!res.isConfirmed) return;
                     $.ajax({
-                        url: `{{ url('admin/products') }}/${data.id}`,
+                        url: `<?php echo e(url('admin/products')); ?>/${data.id}`,
                         type: 'DELETE',
                         success(resp) {
                             Swal.fire('Excluído!', resp.success, 'success');
@@ -581,4 +580,6 @@
 
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('admin::layouts.layout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Bruno\Documents\lumina-app\lumina-app\Modules/Admin\resources/views/products/index.blade.php ENDPATH**/ ?>

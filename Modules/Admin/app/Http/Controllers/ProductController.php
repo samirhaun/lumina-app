@@ -21,13 +21,22 @@ class ProductController extends Controller
     {
         $products = DB::table('products')
             ->join('product_types', 'products.product_type_id', '=', 'product_types.id')
-            ->select('products.id', 'products.name', 'products.code', 'products.product_type_id', 'product_types.name as type_name') // Adicionado 'products.code'
+            ->select(
+                'products.id',
+                'products.name',
+                'products.code',
+                'products.product_type_id',
+                'products.show_in_store',
+                'product_types.name as type_name',
+                'products.description',      // <-- NOVO
+                'products.specifications'    // <-- NOVO
+            )
             ->orderBy('products.created_at', 'desc')
             ->get();
 
         return response()->json(['data' => $products]);
     }
-
+    
     /**
      * Armazena um novo produto
      */
@@ -37,30 +46,30 @@ class ProductController extends Controller
             'name'            => 'required|string|max:255',
             'code'            => 'nullable|string|max:100|unique:products,code',
             'product_type_id' => 'required|integer|exists:product_types,id',
+            'show_in_store'   => 'sometimes|boolean',
+            'description'     => 'nullable|string', // <-- NOVO
+            'specifications'  => 'nullable|string', // <-- NOVO
         ], [
-            // mensagem customizada para SKU único
             'code.unique' => 'Este código (SKU) já está em uso.',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         DB::table('products')->insert([
             'name'            => $request->name,
             'code'            => $request->code,
             'product_type_id' => $request->product_type_id,
+            'show_in_store'   => $request->has('show_in_store') ? 1 : 0,
+            'description'     => $request->description,     // <-- NOVO
+            'specifications'  => $request->specifications,  // <-- NOVO
             'created_at'      => now(),
             'updated_at'      => now(),
         ]);
 
-        return response()->json([
-            'success' => 'Produto criado com sucesso!'
-        ]);
+        return response()->json(['success' => 'Produto criado com sucesso!']);
     }
-
     /**
      * Atualiza um produto existente
      */
@@ -68,22 +77,16 @@ class ProductController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'            => 'required|string|max:255',
-            'code'            => [
-                'nullable',
-                'string',
-                'max:100',
-                Rule::unique('products', 'code')->ignore($id)
-            ],
+            'code'            => ['nullable', 'string', 'max:100', Rule::unique('products', 'code')->ignore($id)],
             'product_type_id' => 'required|integer|exists:product_types,id',
+            'description'     => 'nullable|string', // <-- NOVO
+            'specifications'  => 'nullable|string', // <-- NOVO
         ], [
-            // mesma mensagem customizada para o update
             'code.unique' => 'Este código (SKU) já está em uso.',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         DB::table('products')
@@ -92,14 +95,14 @@ class ProductController extends Controller
                 'name'            => $request->name,
                 'code'            => $request->code,
                 'product_type_id' => $request->product_type_id,
+                'show_in_store'   => $request->has('show_in_store') ? 1 : 0,
+                'description'     => $request->description,     // <-- NOVO
+                'specifications'  => $request->specifications,  // <-- NOVO
                 'updated_at'      => now(),
             ]);
 
-        return response()->json([
-            'success' => 'Produto atualizado com sucesso!'
-        ]);
+        return response()->json(['success' => 'Produto atualizado com sucesso!']);
     }
-
     public function destroy($id)
     {
         try {

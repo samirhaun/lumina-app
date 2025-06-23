@@ -1,209 +1,855 @@
 /* public/css/store.css */
+
+/* ==========================
+   IMPORT FONTS
+   ========================== */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Montserrat:wght@300;400;600&display=swap');
 
+/* ==========================
+   VARIÁVEIS CSS
+   ========================== */
 :root {
-  /* Paleta */
-  --terracota:   #A0522D;
-  --cinza-escuro:#4A4A4A;
-  --bege-claro:  #FFF8F0;
-  --branco:      #FFFFFF;
+    /* Paleta */
+    --terracota: #A0522D;
+    --terracota-dark: #8A3F1A;
+    --cinza-escuro: #4A4A4A;
+    --bege-claro: #FFF8F0;
+    --branco: #FFFFFF;
 
-  /* Tipografia */
-  --ff-head: 'Playfair Display', serif;
-  --ff-body: 'Montserrat', sans-serif;
+    /* Tipografia */
+    --ff-head: 'Playfair Display', serif;
+    --ff-body: 'Montserrat', sans-serif;
 }
 
+/* ==========================
+   RESET E GLOBAL
+   ========================== */
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  font-family: var(--ff-body);
-  background-color: var(--bege-claro);
-  color: var(--cinza-escuro);
-  line-height: 1.6;
+    margin: 0;
+    font-family: var(--ff-body);
+    background-color: var(--bege-claro);
+    color: var(--cinza-escuro);
+    line-height: 1.6;
+}
+
+/* Espaço extra no main para não colar no header sticky */
+main.container {
+    padding-top: 2rem;
 }
 
 /* ==========================
    HEADER / NAVBAR
    ========================== */
 .store-header {
-  background: var(--branco);
-  border-bottom: 1px solid rgba(0,0,0,0.1);
-  padding: 1rem 0;
+    font-family: var(--ff-body);
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    background: var(--branco);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.store-header .navbar {
+    padding: 1rem 0;
+    background: transparent;
+    border-bottom: none;
+}
+
 .store-header .navbar-brand img {
-  max-height: 60px;
-  transition: transform .3s;
+    max-height: 60px;
+    transition: transform .3s;
 }
+
 .store-header .navbar-brand:hover img {
-  transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+/* Nav-link padrão */
+.store-header .navbar-nav .nav-link {
+    color: var(--cinza-escuro);
+    font-weight: 500;
+    margin: 0 .75rem;
+    position: relative;
+    transition: color .2s;
+}
+
+/* Hover e ativo */
+.store-header .navbar-nav .nav-link:hover {
+    color: var(--terracota);
+}
+
+.store-header .navbar-nav .nav-link.active,
+.store-header .navbar-nav .nav-link:focus {
+    color: var(--terracota) !important;
+}
+
+.store-header .navbar-nav .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 2px;
+    background: var(--terracota);
+    border-radius: 1px;
+}
+
+/* Botão Carrinho */
+.store-header .btn-outline-dark {
+    border-color: var(--terracota);
+    color: var(--terracota);
+    border-radius: 50px;
+    font-weight: 600;
+}
+
+.store-header .btn-outline-dark:hover {
+    background: var(--terracota);
+    color: #fff;
+}
+
+:root {
+    /* ajuste este valor para a altura exata do seu header */
+    --header-height: 70px;
+}
+
+.store-categories {
+    position: sticky;
+    top: var(--header-height);
+    z-index: 1020;
+    /* abaixo do header (1030) */
+    width: 100%;
+    background: var(--branco);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* mantém o conteúdo centralizado igual a um .container */
+.store-categories .nav {
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+/* links */
+.store-categories .nav-link {
+    color: var(--cinza-escuro);
+    font-weight: 500;
+    padding: .5rem 1rem;
+    transition: color .2s, background .2s;
+}
+
+.store-categories .nav-link:hover {
+    color: var(--terracota-dark);
+    background: rgba(160, 82, 45, 0.05);
+    border-radius: .25rem;
+}
+
+.store-categories .nav-link.active {
+    color: #fff !important;
+    background: var(--terracota);
+    border-radius: .25rem;
+}
+
+/* ==========================
+   CATEGORIAS - LINK ATIVO
+   ========================== */
+.store-categories .nav-link.active {
+    color: #fff !important;
+    background-color: var(--terracota) !important;
+    border-radius: .25rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.store-categories .nav-link.active:hover {
+    background-color: var(--terracota-dark) !important;
 }
 
 /* ==========================
    HERO SECTION
    ========================== */
-.hero-section {
-  position: relative;
-  height: 70vh;
-  background: url('/images/hero-bg.jpg') center/cover no-repeat;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+.hero-section .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
 }
-.hero-section::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: rgba(0,0,0,0.45);
-}
+
 .hero-content {
-  position: relative;
-  text-align: center;
-  color: #fff;
-  padding: 0 1rem;
+    position: relative;
+    text-align: center;
+    color: #fff;
+    padding: 0 1rem;
+    max-width: 90%;
 }
+
 .hero-title {
-  font-family: var(--ff-head);
-  font-size: 3.5rem;
-  font-weight: 900;
-  margin-bottom: .5rem;
+    font-family: var(--ff-head);
+    font-size: 4rem;
+    font-weight: 900;
+    margin-bottom: .5rem;
 }
+
 .hero-subtitle {
-  font-size: 1.25rem;
-  margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
 }
+
 .btn-hero {
-  display: inline-block;
-  background: var(--terracota);
-  color: #fff;
-  padding: .75rem 2rem;
-  border-radius: 50px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background .3s, transform .3s;
+    display: inline-block;
+    background: var(--terracota);
+    color: #fff !important;
+    padding: .75rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .3s, transform .3s;
 }
+
 .btn-hero:hover {
-  background: darken(var(--terracota), 10%);
-  transform: translateY(-2px);
+    background: var(--terracota-dark);
+    transform: translateY(-2px);
 }
 
 /* ==========================
    SECTION TITLE
    ========================== */
 .section-title {
-  font-family: var(--ff-head);
-  font-size: 2rem;
-  color: var(--terracota);
-  text-align: center;
-  margin: 3rem 0 1rem;
-  position: relative;
+    font-family: var(--ff-head);
+    font-size: 2rem;
+    color: var(--terracota);
+    text-align: center;
+    margin: 3rem 0 1rem;
+    position: relative;
 }
+
 .section-title::after {
-  content: '';
-  display: block;
-  width: 80px; height: 3px;
-  background: var(--terracota);
-  margin: .5rem auto 0;
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    background: var(--terracota);
+    margin: .5rem auto 0;
+}
+
+/* ==========================
+   HERO WRAPPER FULL-WIDTH
+   ========================== */
+.hero-wrapper {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    /* borda terracota em cima e embaixo */
+    border-top: 4px solid var(--terracota);
+    border-bottom: 4px solid var(--terracota);
+}
+
+.hero-wrapper .hero-section {
+    /* tira qualquer gap que você tivesse antes */
+    margin: 0;
+    /* altura desejada */
+    height: 75vh;
+}
+
+.hero-wrapper .hero-section .carousel-inner,
+.hero-wrapper .hero-section .carousel-item {
+    height: 100%;
+}
+
+.hero-wrapper .hero-section .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* ==========================
    PRODUCT GRID
    ========================== */
-#produtos .row {
-  margin-top: 2rem;
+#produtos {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
 }
+
 .product-card {
-  background: var(--branco);
-  border: none;
-  border-radius: .75rem;
-  overflow: hidden;
-  transition: transform .4s ease, box-shadow .4s ease;
+    background: var(--branco);
+    border: 1px solid transparent;
+    border-radius: .75rem;
+    overflow: hidden;
+    transition: border-color .3s, transform .4s ease, box-shadow .4s ease;
 }
+
 .product-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+    border-color: var(--terracota);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
 }
+
 .product-card .card-img-top {
-  height: 260px;
-  object-fit: cover;
+    height: 260px;
+    object-fit: cover;
 }
+
 .product-card .card-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
 }
-.product-card .card-title {
-  font-family: var(--ff-head);
-  font-size: 1.1rem;
-  height: 2.4em;
-  overflow: hidden;
-  margin-bottom: .5rem;
+
+.product-card .card-title a {
+    color: var(--cinza-escuro);
+    transition: color .2s;
 }
+
+.product-card .card-title a:hover {
+    color: var(--terracota-dark);
+}
+
 .product-card .card-price {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--terracota);
-  margin-bottom: 1.2rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--terracota);
+    margin-bottom: 1.2rem;
 }
+
 .btn-add-to-cart {
-  background: var(--cinza-escuro);
-  color: var(--branco);
-  border: none;
-  border-radius: 50px;
-  font-weight: 600;
-  padding: .6rem 1.2rem;
-  transition: background .3s, transform .2s;
+    border: 2px solid var(--terracota);
+    background: transparent;
+    color: var(--terracota);
+    border-radius: 50px;
+    font-weight: 600;
+    padding: .6rem 1.2rem;
+    transition: background .3s, transform .2s, color .2s;
 }
+
 .btn-add-to-cart:hover {
-  background: var(--terracota);
-  transform: translateY(-2px);
+    background: var(--terracota);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
+/* Botão outline no tom terracota */
+.btn-outline-terracota {
+    color: var(--terracota);
+    border: 2px solid var(--terracota);
+    border-radius: .75rem;
+    font-weight: 600;
+    transition: background .3s, color .3s;
+}
+
+.btn-outline-terracota:hover,
+.btn-outline-terracota:focus {
+    background-color: var(--terracota);
+    color: #fff !important;
+    text-decoration: none;
+}
+
 
 /* ==========================
    BRAND STORY
    ========================== */
 .brand-story {
-  background: var(--branco);
-  padding: 4rem 1rem;
-  text-align: center;
+    background: var(--branco);
+    padding: 4rem 1rem;
+    text-align: center;
 }
+
+.brand-story .section-title {
+    margin-top: 0;
+}
+
 .brand-story .lead {
-  font-size: 1.1rem;
-  color: var(--cinza-escuro);
-  max-width: 700px;
-  margin: 0 auto;
+    font-size: 1.1rem;
+    color: var(--cinza-escuro);
+    max-width: 700px;
+    margin: 1rem auto 0;
 }
 
 /* ==========================
    FOOTER
    ========================== */
 footer {
-  background: var(--bege-claro);
-  padding: 2rem 1rem;
-  text-align: center;
-  color: #666;
-  font-size: .9rem;
+    background: var(--bege-claro);
+    padding: 2rem 1rem;
+    text-align: center;
+    color: #666;
+    font-size: .9rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
+
 footer a {
-  color: #999;
-  margin: 0 .5rem;
-  transition: color .3s;
+    color: var(--cinza-escuro);
+    margin: 0 .5rem;
+    transition: color .2s;
 }
+
 footer a:hover {
-  color: var(--terracota);
+    color: var(--terracota);
 }
 
 /* ==========================
    RESPONSIVIDADE
    ========================== */
 @media (max-width: 992px) {
-  .hero-title { font-size: 2.8rem; }
-  .hero-subtitle { font-size: 1.1rem; }
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
 }
+
 @media (max-width: 576px) {
-  .hero-section { height: 50vh; }
-  .hero-title { font-size: 2.2rem; }
-  .hero-subtitle { font-size: 1rem; }
+    .hero-section {
+        height: 50vh;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: .9rem;
+    }
+}
+
+/* ==========================
+   BENEFITS / DESTAQUES
+   ========================== */
+.benefits i {
+    color: var(--terracota);
+}
+
+.benefits .fa-whatsapp {
+    /* override: deixamos o ícone Whatsapp verde, como comum */
+    color: #25D366;
+}
+
+/* texto terracota para links */
+.text-terracota {
+    color: var(--terracota) !important;
+}
+
+.benefits .border-start {
+    border-left: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.benefits .border-end {
+    border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* botão flutuante de WhatsApp */
+.whatsapp-float {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background-color: #25D366;
+    /* verde oficial */
+    color: #fff;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    z-index: 1050;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color .2s;
+    /* remove o sublinhado */
+    text-decoration: none;
+}
+
+/* só pra garantir que nem no hover apareça */
+.whatsapp-float:hover {
+    text-decoration: none;
+}
+
+.whatsapp-float:hover {
+    background-color: #1ebe57;
+    text-decoration: none;
+    color: #fff;
+}
+
+/* Pontinhos do carrossel */
+.carousel-indicators [data-bs-target] {
+    background-color: rgba(160, 82, 45, 0.5);
+    /* terracota mais suave */
+}
+
+.carousel-indicators .active {
+    background-color: var(--terracota) !important;
+}
+
+/* ==========================
+   CAROUSEL CONTROLS TERRACOTA
+   ========================== */
+/* 1) Maior área clicável */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 3.5rem;
+    /* antes era 3rem */
+    height: 3.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* 2) Escala o SVG para ficar mais espesso */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-size: 2rem 2rem;
+    /* de 1rem para 2rem */
+}
+
+/* 3) Se quiser ainda mais “grosso”, dê um zoom */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    transform: scale(1.3);
+    /* ajusta entre 1 e 1.5 até ficar no ponto */
+}
+
+/* 4) Mantém a cor Terracota que você já definiu */
+.carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23A0522D' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 1 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3E%3C/svg%3E");
+}
+
+.carousel-control-next-icon {
+    background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23A0522D' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 1 1-.708-.708L10.293 8 3.938 1.354a.5.5 0 0 1 .708-.708z'/%3E%3C/svg%3E");
+}
+
+/* Remove o background dos controles padrão */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    display: none;
+}
+
+/* ==========================
+   CAROUSEL CONTROLS EM CÍRCULO
+   ========================== */
+.carousel-control-icon-circle {
+    width: 3rem;
+    height: 3rem;
+    background: var(--branco);
+    border: 2px solid var(--terracota);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .2s, transform .2s;
+}
+
+.carousel-control-icon-circle i {
+    color: var(--terracota);
+    font-size: 1.25rem;
+}
+
+/* Pequeno hover para destacar */
+.carousel-control-prev:hover .carousel-control-icon-circle,
+.carousel-control-next:hover .carousel-control-icon-circle {
+    background: var(--terracota);
+}
+
+.carousel-control-prev:hover .carousel-control-icon-circle i,
+.carousel-control-next:hover .carousel-control-icon-circle i {
+    color: #fff;
+}
+
+/* ==========================
+   TÍTULO “Todos os Produtos” ALTERNATIVO
+   ========================== */
+.section-title-alt {
+    font-family: var(--ff-body);
+    /* Montserrat, sans-serif */
+    font-weight: 600;
+    /* Negrito intermediário */
+    /* opcionalmente ajuste tamanho ou espaçamento */
+    font-size: 1.9rem;
+    letter-spacing: 0.5px;
+}
+
+/* ===================================
+   ESTILOS PARA A PÁGINA DE CHECKOUT
+   =================================== */
+
+/* Painel de cada etapa do checkout */
+.checkout-step {
+    background-color: #ffffff;
+    border-radius: .5rem;
+    padding: 1.5rem 2rem;
+    border: 1px solid #e9ecef;
+    margin-bottom: 2rem;
+}
+
+.checkout-step-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.checkout-step-header .step-number {
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: var(--terracota);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+/* Cards de seleção para Rádio (Entrega, Pagamento) */
+.choice-card {
+    border: 2px solid #e9ecef;
+    border-radius: .5rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+    position: relative;
+}
+
+.choice-card:hover {
+    border-color: #adb5bd;
+    background-color: #f8f9fa;
+}
+
+/* Estilo do card QUANDO o rádio dentro dele está selecionado */
+.choice-card-input:checked+.choice-card {
+    border-color: var(--terracota);
+    background-color: #fffaf7;
+    box-shadow: 0 0 0 2px var(--terracota);
+}
+
+.choice-card-input {
+    display: none;
+    /* Esconde o botão de rádio original */
+}
+
+.choice-card strong {
+    color: #333;
+}
+
+.choice-card p {
+    color: #6c757d;
+    font-size: .9rem;
+    margin-bottom: 0;
+}
+
+/* Resumo do Pedido com imagens */
+.order-summary .summary-item-with-image {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.order-summary .summary-item-with-image img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: .25rem;
+}
+
+.order-summary .summary-item-with-image .item-details {
+    flex-grow: 1;
+}
+
+.checkout-footer {
+    background-color: #fffafa;
+    /* leve variação de tom para separar do conteúdo */
+}
+
+.btn-terracota {
+    color: #fff;
+    background-color: #A0522D;
+    border: none;
+    overflow: hidden;
+    transition: color .3s ease;
+}
+
+.btn-terracota .btn-bg {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .3s ease;
+    z-index: 1;
+}
+
+.btn-terracota:hover .btn-bg {
+  background-color: rgba(0, 0, 0, 0.15); /* overlay levemente escuro */
+}
+
+.btn-terracota:focus {
+    outline: none;
+    box-shadow: 0 0 0 .3rem rgba(160, 82, 45, .5);
+}
+
+
+.btn-terracota:hover .btn-bg {
+  transform: scaleX(1);
+}
+.hero-section {
+  /* mantém seu bg-light, bordas e padding */
+  position: relative;
+  overflow: hidden;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hero-section h1 {
+  font-family: var(--ff-head);
+  font-size: 4.5rem;           /* um pouco maior */
+  font-weight: 900;
+  letter-spacing: 1px;         /* espaçamento mais refinado */
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.hero-section p.lead {
+  font-family: var(--ff-body);
+  font-size: 1.25rem;
+  font-weight: 400;
+  max-width: 600px;
+  margin: 0 auto;
+  letter-spacing: 0.5px;
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+  .hero-section h1 {
+    font-size: 3.5rem;
+  }
+  .hero-section p.lead {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-section h1 {
+    font-size: 2.5rem;
+  }
+  .hero-section p.lead {
+    font-size: 1rem;
+  }
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Estilos Customizados do Card de Produto (v2)
+|--------------------------------------------------------------------------
+*/
+
+/* 1. Reset e Estilo Principal do Card */
+.product-card-v2 {
+    border: 1px solid #EAE0D5; /* Borda sutil */
+    border-radius: 15px;      /* Cantos mais arredondados */
+    background-color: #FDFBF7;/* Fundo levemente bege */
+    box-shadow: none;         /* Remove a sombra padrão */
+    overflow: hidden;         /* Garante que a borda superior não vaze */
+    position: relative;       /* Necessário para a borda superior */
+    transition: transform 0.2s ease-out;
+}
+
+.product-card-v2:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+/* 2. A Borda Superior Colorida */
+.product-card-v2 .card-top-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: #C69C6D; /* Tom de 'ouro envelhecido' da imagem */
+}
+
+/* 3. Ajustes de Tipografia dentro do Card */
+.product-card-v2 .card-body {
+    padding: 1rem 1.5rem;
+}
+
+.product-card-v2 .card-title {
+    font-size: 1.1rem;      /* Tamanho da fonte do título */
+    font-weight: 400;       /* Título sem negrito, mais elegante */
+    color: #5C5C5C;
+    margin-bottom: 0.25rem;
+}
+
+.product-card-v2 .product-code {
+    font-size: 0.85rem;     /* Tamanho da fonte do código */
+    color: #8D8D8D;         /* Cor mais suave para o código */
+    margin-bottom: 1rem;
+}
+
+.product-card-v2 .card-price {
+    font-size: 1.5rem;      /* Preço bem destacado */
+    font-weight: 700;       /* Preço em negrito */
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+/* 4. Caixa de Parcelamento */
+.product-card-v2 .installment-box {
+    border: 1px solid #DCDCDC;
+    border-radius: 5px;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.9rem;
+    color: #757575;
+    display: inline-block;
+    margin-bottom: 1.25rem;
+    background-color: #fff;
+}
+
+
+/* 5. O Botão de Comprar Customizado */
+.product-card-v2 .btn-custom-brown {
+    background-color: #8B5E34;  /* Cor marrom do botão da imagem */
+    color: #FFFFFF;             /* Texto branco */
+    border: none;
+    border-radius: 8px;         /* Cantos arredondados do botão */
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s ease;
+}
+
+.product-card-v2 .btn-custom-brown:hover {
+    background-color: #6a4827;  /* Um tom de marrom mais escuro para o hover */
+    color: #FFFFFF;
+}
+
+
+{{-- Cole este CSS junto com os outros estilos no @push('styles') --}}
+
+/* ===================================
+   NOVO ESTILO "BONITINHO" PARA O SKU
+   =================================== */
+.sku-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.85rem;
+    background-color: #f7f7f7; /* Um cinza ainda mais claro e suave */
+    border: 1px solid #e9e9e9;
+    border-radius: 50px; /* Deixa com formato de pílula */
+    margin-bottom: 1.25rem; /* Espaço abaixo da etiqueta */
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.sku-badge i {
+    color: var(--terracota); /* Ícone na cor do tema */
+    margin-right: 0.6rem;    /* Espaço entre o ícone e o texto */
+    font-size: 1.1rem;       /* Tamanho do ícone */
 }

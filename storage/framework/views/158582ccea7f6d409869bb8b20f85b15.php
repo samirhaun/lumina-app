@@ -1,8 +1,6 @@
-@extends('admin::layouts.layout')
+<?php $__env->startSection('title', "Imagens de: {$product->name}"); ?>
 
-@section('title', "Imagens de: {$product->name}")
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div id="catalogContent">
         <style>
             :root {
@@ -103,24 +101,24 @@
             }
         </style>
 
-        {{-- Upload de novas imagens --}}
+        
         <div class="card card-success">
             <div class="card-header">
                 <h3 class="card-title">Adicionar Novas Imagens</h3>
             </div>
-            <form action="{{ route('admin.products.images.store', $product->id) }}" method="POST"
+            <form action="<?php echo e(route('admin.products.images.store', $product->id)); ?>" method="POST"
                 enctype="multipart/form-data">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <div class="card-body">
-                    @if ($errors->any())
+                    <?php if($errors->any()): ?>
                         <div class="alert alert-danger">
                             <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
+                                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <li><?php echo e($error); ?></li>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </ul>
                         </div>
-                    @endif
+                    <?php endif; ?>
                     <div class="form-group">
                         <label for="images">Selecione as imagens (pode selecionar várias)</label>
                         <input type="file" class="form-control" name="images[]" id="images" multiple required>
@@ -128,13 +126,13 @@
                 </div>
                 <div class="card-footer">
                     <button type="submit" class="btn btn-primary">Enviar Imagens</button>
-                    <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Voltar para a Lista de
+                    <a href="<?php echo e(route('admin.products.index')); ?>" class="btn btn-secondary">Voltar para a Lista de
                         Produtos</a>
                 </div>
             </form>
         </div>
 
-        {{-- Galeria atual de imagens --}}
+        
         <div class="card">
             <div class="card">
                 <div class="card-header bg-terracota text-white d-flex justify-content-between align-items-center">
@@ -145,34 +143,34 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    @if ($images->isEmpty())
+                    <?php if($images->isEmpty()): ?>
                         <p class="text-center text-muted">Nenhuma imagem cadastrada para este produto.</p>
-                    @else
+                    <?php else: ?>
                         <div id="sortable-gallery" class="image-gallery">
-                            @foreach ($images as $image)
-                                <div class="image-card" data-id="{{ $image->id }}">
-                                    <img src="{{ $image->image_url }}" alt="Imagem do produto">
-                                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ $image->id }}">
+                            <?php $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <div class="image-card" data-id="<?php echo e($image->id); ?>">
+                                    <img src="<?php echo e($image->image_url); ?>" alt="Imagem do produto">
+                                    <button class="btn btn-danger btn-sm delete-btn" data-id="<?php echo e($image->id); ?>">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                     <div class="reorder-handle"><i class="fas fa-grip-vertical"></i></div>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
 
-        </div> {{-- #catalogContent --}}
-    @endsection
+        </div> 
+    <?php $__env->stopSection(); ?>
 
-    @push('scripts')
+    <?php $__env->startPush('scripts'); ?>
         <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
         <script>
             $(function() {
                 $.ajaxSetup({
                     headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
                     }
                 });
                 $("#sortable-gallery").sortable({
@@ -182,7 +180,7 @@
                         $(this).find('.image-card').each(function() {
                             order.push($(this).data('id'));
                         });
-                        $.post("{{ route('admin.products.images.update-order') }}", {
+                        $.post("<?php echo e(route('admin.products.images.update-order')); ?>", {
                             order
                         }).done(res => {
                             const Toast = Swal.mixin({
@@ -212,7 +210,7 @@
                     }).then(r => {
                         if (!r.isConfirmed) return;
                         $.ajax({
-                                url: `{{ url('admin/product-images') }}/${id}`,
+                                url: `<?php echo e(url('admin/product-images')); ?>/${id}`,
                                 type: 'DELETE'
                             })
                             .done(res => {
@@ -227,4 +225,6 @@
                 });
             });
         </script>
-    @endpush
+    <?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('admin::layouts.layout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Bruno\Documents\lumina-app\lumina-app\Modules/Admin\resources/views/products/images/index.blade.php ENDPATH**/ ?>

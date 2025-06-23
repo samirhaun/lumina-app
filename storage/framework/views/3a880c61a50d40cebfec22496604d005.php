@@ -1,8 +1,6 @@
-@extends('admin::layouts.layout')
+<?php $__env->startSection('title', 'Clientes'); ?>
 
-@section('title', 'Clientes')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         :root {
             --terracota: #A0522D;
@@ -276,7 +274,7 @@
                         <th>ID</th>
                         <th>Nome</th>
                         <th>Observações</th>
-                        {{-- NOVAS COLUNAS --}}
+                        
                         <th class="text-center">Vendas</th>
                         <th class="text-center">Total Gasto</th>
                         <th style="width: 120px">Ações</th>
@@ -294,7 +292,7 @@
                     <h5 class="modal-title" id="clientModalLabel">Novo Cliente</h5>
                 </div>
                 <form id="clientForm">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <div class="modal-body">
                         <input type="hidden" id="client_id" name="id">
                         <div class="mb-3">
@@ -333,15 +331,15 @@
                 </div>
             </div>
         </div>
-</div>@endsection
+</div><?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
         $(function() {
             // --- SETUP GLOBAL E FUNÇÕES ---
             $.ajaxSetup({
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
                 }
             });
             const dtLanguage = {
@@ -386,7 +384,7 @@
             // --- DATATABLE ---
             const clientsTable = $('#clientsTable').DataTable({
                 processing: true,
-                ajax: "{{ route('admin.clients.data') }}",
+                ajax: "<?php echo e(route('admin.clients.data')); ?>",
                 columns: [{
                         data: 'id'
                     },
@@ -416,7 +414,7 @@
                         orderable: false,
                         className: 'actions-cell',
                         render: (data, type, row) => `
-                    {{-- O BOTÃO DE VENDAS AGORA ABRE O MODAL --}}
+                    
                     <button class="btn btn-sm btn-info view-sales-btn" title="Ver Vendas de ${row.name}" data-id="${row.id}" data-name="${row.name}">
                         <i class="fas fa-shopping-cart"></i>
                     </button>
@@ -437,7 +435,7 @@
                 $('#clientForm')[0].reset();
                 $('#clientModalLabel').text('Novo Cliente');
                 $('#clientFormSubmitButton').text('Salvar');
-                $('#clientForm').data('method', 'POST').data('url', '{{ route('admin.clients.store') }}');
+                $('#clientForm').data('method', 'POST').data('url', '<?php echo e(route('admin.clients.store')); ?>');
             });
 
             $('#clientsTable tbody').on('click', '.edit-btn', function() {
@@ -448,7 +446,7 @@
                 $('#client_id').val(data.id);
                 $('#name').val(data.name);
                 $('#notes').val(data.notes);
-                $('#clientForm').data('method', 'PUT').data('url', `{{ url('admin/clients') }}/${data.id}`);
+                $('#clientForm').data('method', 'PUT').data('url', `<?php echo e(url('admin/clients')); ?>/${data.id}`);
                 $('#clientModal').modal('show');
             });
 
@@ -492,7 +490,7 @@
                 modal.modal('show');
 
                 // 2. Requisição AJAX
-                $.get(`{{ url('admin/clients') }}/${clientId}/sales`)
+                $.get(`<?php echo e(url('admin/clients')); ?>/${clientId}/sales`)
                     .done(function(response) {
                         const sales = response.sales;
                         let content = '';
@@ -615,7 +613,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: `{{ url('admin/clients') }}/${data.id}`,
+                            url: `<?php echo e(url('admin/clients')); ?>/${data.id}`,
                             type: 'DELETE',
                             success: function(response) {
                                 Swal.fire('Excluído!', response.success, 'success');
@@ -628,4 +626,6 @@
             });
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('admin::layouts.layout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Bruno\Documents\lumina-app\lumina-app\Modules/Admin\resources/views/clients/index.blade.php ENDPATH**/ ?>

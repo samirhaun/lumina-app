@@ -1,54 +1,83 @@
 <?php
 
+// Modules/Frontend/Http/Controllers/ProductController.php
+
 namespace Modules\Frontend\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
-    /**
-     * Listagem de produtos (opcional, você já tem em HomeController).
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $products = DB::table('products')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // Carrega todos os tipos (para o filtro de abas)
+        $productTypes = DB::table('product_types')->orderBy('name')->get();
 
-        return view('frontend::products.index', compact('products'));
+        // Se veio um filtro por tipo, aplica; senão traz todos
+        $typeId = $request->input('type');
+        $productsQuery = DB::table('products')
+            ->join('product_types', 'products.product_type_id', '=', 'product_types.id')
+            ->select(
+                'products.id',
+                'products.name',
+                'products.sale_price',
+                'products.product_type_id',
+                'product_types.name as type_name'
+            )
+            ->orderBy('products.created_at', 'desc');
+
+        if ($typeId) {
+            $productsQuery->where('products.product_type_id', $typeId);
+        }
+
+        $products = $productsQuery->get();
+
+        // Pego a 1ª imagem de cada produto
+        $imagesRaw = DB::table('product_images')
+            ->whereIn('product_id', $products->pluck('id'))
+            ->orderBy('sort_order')
+            ->get()
+            ->groupBy('product_id');
+
+
+        return view('frontend::products.index', [
+            'productTypes'     => $productTypes,
+            'products'         => $products,
+            'imagesByProduct'  => $imagesRaw,
+            'currentTypeId'    => $typeId,
+
+        ]);
     }
 
-    /**
-     * Exibe a página de detalhes de um produto.
-     */
     public function show($id)
     {
-        // Pega os dados principais do produto
+        // Produto + tipo
         $product = DB::table('products')
             ->join('product_types', 'products.product_type_id', '=', 'product_types.id')
             ->select('products.*', 'product_types.name as type_name')
             ->where('products.id', $id)
             ->first();
+        if (!$product) abort(404);
 
-        if (!$product) {
-            abort(404);
-        }
-
-        // Pega todas as imagens da galeria para este produto
+        // Todas as imagens
         $productImages = DB::table('product_images')
             ->where('product_id', $id)
-            ->orderBy('sort_order')
+            ->orderBy('sort_order', 'asc')
             ->get();
 
-        // Pega produtos relacionados (lógica anterior)
+        // Relacionados (mesmo tipo)
         $relatedProducts = DB::table('products')
             ->where('product_type_id', $product->product_type_id)
-            ->where('products.id', '!=', $id)
+            ->where('id', '!=', $id)
             ->limit(4)
             ->get();
 
-        // Envia tudo para a view
-        return view('frontend::products.show', compact('product', 'productImages', 'relatedProducts'));
+        return view('frontend::products.show', compact(
+            'product',
+            'productImages',
+            'relatedProducts'
+        ));
     }
 }

@@ -4,9 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-    <title>{{ config('app.name') }} • Admin - @yield('title')</title>
+    <title><?php echo e(config('app.name')); ?> • Admin - <?php echo $__env->yieldContent('title'); ?></title>
 
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -149,8 +149,8 @@
 
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <form method="POST" action="{{ route('admin.logout') }}">
-                        @csrf
+                    <form method="POST" action="<?php echo e(route('admin.logout')); ?>">
+                        <?php echo csrf_field(); ?>
                         <button type="submit" class="btn btn-sm btn-logout">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </button>
@@ -161,8 +161,8 @@
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="{{ route('admin.dashboard') }}" class="brand-link text-center py-4">
-                <img src="{{ asset('images/logo-terracota.png') }}" alt="{{ config('app.name') }} Admin"
+            <a href="<?php echo e(route('admin.dashboard')); ?>" class="brand-link text-center py-4">
+                <img src="<?php echo e(asset('images/logo-terracota.png')); ?>" alt="<?php echo e(config('app.name')); ?> Admin"
                     class="img-fluid" style="max-height: 60px; object-fit: contain;">
             </a>
 
@@ -171,20 +171,20 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
 
-                        {{-- DASHBOARD --}}
+                        
                         <li class="nav-item">
-                            <a href="{{ route('admin.dashboard') }}"
-                                class="nav-link {{ Route::is('admin.dashboard') ? 'active' : '' }}">
+                            <a href="<?php echo e(route('admin.dashboard')); ?>"
+                                class="nav-link <?php echo e(Route::is('admin.dashboard') ? 'active' : ''); ?>">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>Dashboard</p>
                             </a>
                         </li>
 
-                        {{-- FINANCEIRO --}}
+                        
                         <li
-                            class="nav-item has-treeview {{ Route::is('admin.sales.*', 'admin.cash-flow.*', 'admin.financial-transactions.*', 'admin.purchases.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview <?php echo e(Route::is('admin.sales.*', 'admin.cash-flow.*', 'admin.financial-transactions.*', 'admin.purchases.*') ? 'menu-open' : ''); ?>">
                             <a href="#"
-                                class="nav-link {{ Route::is('admin.sales.*', 'admin.cash-flow.*', 'admin.financial-transactions.*', 'admin.purchases.*') ? 'active' : '' }}">
+                                class="nav-link <?php echo e(Route::is('admin.sales.*', 'admin.cash-flow.*', 'admin.financial-transactions.*', 'admin.purchases.*') ? 'active' : ''); ?>">
                                 <i class="nav-icon fas fa-wallet"></i>
                                 <p>
                                     Financeiro
@@ -193,29 +193,29 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.sales.index') }}"
-                                        class="nav-link {{ Route::is('admin.sales.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.sales.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.sales.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-cash-register nav-icon"></i>
                                         <p>Vendas</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.cash-flow.index') }}"
-                                        class="nav-link {{ Route::is('admin.cash-flow.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.cash-flow.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.cash-flow.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-chart-line nav-icon"></i>
                                         <p>Fluxo de Caixa</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.financial-transactions.index') }}"
-                                        class="nav-link {{ Route::is('admin.financial-transactions.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.financial-transactions.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.financial-transactions.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-money-bill-wave nav-icon"></i>
                                         <p>Transações</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.purchases.index') }}"
-                                        class="nav-link {{ Route::is('admin.purchases.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.purchases.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.purchases.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-file-invoice-dollar nav-icon"></i>
                                         <p>Contas a Pagar</p>
                                     </a>
@@ -223,11 +223,11 @@
                             </ul>
                         </li>
 
-                        {{-- PRODUTOS --}}
+                        
                         <li
-                            class="nav-item has-treeview {{ Route::is('admin.pricing.*', 'admin.products.*', 'admin.stock.*', 'admin.misc-items.*', 'admin.misc-categories.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview <?php echo e(Route::is('admin.pricing.*', 'admin.products.*', 'admin.stock.*', 'admin.misc-items.*', 'admin.misc-categories.*') ? 'menu-open' : ''); ?>">
                             <a href="#"
-                                class="nav-link {{ Route::is('admin.pricing.*', 'admin.products.*', 'admin.stock.*', 'admin.misc-items.*', 'admin.misc-categories.*') ? 'active' : '' }}">
+                                class="nav-link <?php echo e(Route::is('admin.pricing.*', 'admin.products.*', 'admin.stock.*', 'admin.misc-items.*', 'admin.misc-categories.*') ? 'active' : ''); ?>">
                                 <i class="nav-icon fas fa-boxes"></i>
                                 <p>
                                     Produtos
@@ -236,29 +236,29 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.pricing.index') }}"
-                                        class="nav-link {{ Route::is('admin.pricing.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.pricing.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.pricing.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-tag nav-icon"></i>
                                         <p>Precificação</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.products.index') }}"
-                                        class="nav-link {{ Route::is('admin.products.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.products.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.products.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-box-open nav-icon"></i>
                                         <p>Catálogo</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.stock.index') }}"
-                                        class="nav-link {{ Route::is('admin.stock.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.stock.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.stock.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-warehouse nav-icon"></i>
                                         <p>Estoque</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.misc-items.index') }}"
-                                        class="nav-link {{ Route::is('admin.misc-items.*') || Route::is('admin.misc-categories.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.misc-items.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.misc-items.*') || Route::is('admin.misc-categories.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-puzzle-piece nav-icon"></i>
                                         <p>Custos Diversos</p>
                                     </a>
@@ -266,11 +266,11 @@
                             </ul>
                         </li>
 
-                        {{-- CADASTROS --}}
+                        
                         <li
-                            class="nav-item has-treeview {{ Route::is('admin.suppliers.*', 'admin.clients.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview <?php echo e(Route::is('admin.suppliers.*', 'admin.clients.*') ? 'menu-open' : ''); ?>">
                             <a href="#"
-                                class="nav-link {{ Route::is('admin.suppliers.*', 'admin.clients.*') ? 'active' : '' }}">
+                                class="nav-link <?php echo e(Route::is('admin.suppliers.*', 'admin.clients.*') ? 'active' : ''); ?>">
                                 <i class="nav-icon fas fa-address-book"></i>
                                 <p>
                                     Cadastros
@@ -279,15 +279,15 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.suppliers.index') }}"
-                                        class="nav-link {{ Route::is('admin.suppliers.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.suppliers.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.suppliers.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-truck nav-icon"></i>
                                         <p>Fornecedores</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.clients.index') }}"
-                                        class="nav-link {{ Route::is('admin.clients.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.clients.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.clients.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-id-card nav-icon"></i>
                                         <p>Clientes</p>
                                     </a>
@@ -295,11 +295,11 @@
                             </ul>
                         </li>
 
-                        {{-- UTILITÁRIOS --}}
+                        
                         <li
-                            class="nav-item has-treeview {{ Route::is('admin.linktree-manager.*', 'admin.users.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview <?php echo e(Route::is('admin.linktree-manager.*', 'admin.users.*') ? 'menu-open' : ''); ?>">
                             <a href="#"
-                                class="nav-link {{ Route::is('admin.linktree-manager.*', 'admin.users.*') ? 'active' : '' }}">
+                                class="nav-link <?php echo e(Route::is('admin.linktree-manager.*', 'admin.users.*') ? 'active' : ''); ?>">
                                 <i class="nav-icon fas fa-tools"></i>
                                 <p>
                                     Utilitários
@@ -308,23 +308,23 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.linktree-manager.index') }}"
-                                        class="nav-link {{ Route::is('admin.linktree-manager.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.linktree-manager.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.linktree-manager.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-link nav-icon"></i>
                                         <p>Linktree</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.hero-banners.index') }}"
-                                        class="nav-link {{ Route::is('admin.hero-banners.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.hero-banners.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.hero-banners.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-image nav-icon"></i>
                                         <p>Banners da Homepage</p>
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.users.index') }}"
-                                        class="nav-link {{ Route::is('admin.users.*') ? 'active' : '' }}">
+                                    <a href="<?php echo e(route('admin.users.index')); ?>"
+                                        class="nav-link <?php echo e(Route::is('admin.users.*') ? 'active' : ''); ?>">
                                         <i class="fas fa-users nav-icon"></i>
                                         <p>Usuários</p>
                                     </a>
@@ -343,7 +343,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>@yield('header')</h1>
+                            <h1><?php echo $__env->yieldContent('header'); ?></h1>
                         </div>
                     </div>
                 </div>
@@ -351,8 +351,8 @@
 
             <section class="content">
                 <div class="container-fluid">
-                    {{-- O conteúdo específico de cada página será injetado aqui --}}
-                    @yield('content')
+                    
+                    <?php echo $__env->yieldContent('content'); ?>
                 </div>
             </section>
         </div>
@@ -368,7 +368,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 
 </html>
+<?php /**PATH C:\Users\Bruno\Documents\lumina-app\lumina-app\Modules/Admin\resources/views/layouts/layout.blade.php ENDPATH**/ ?>

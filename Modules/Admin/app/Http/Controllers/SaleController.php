@@ -57,59 +57,59 @@ class SaleController extends Controller
      * Busca produtos para o Select2 com AJAX, agora por NOME ou ID.
      */
     // Dentro da classe SaleController
-public function searchProducts(Request $request)
-{
-    $searchTerm = $request->input('q', '');
 
-    // 1. Monta a query incluindo o tipo de produto
-    $query = DB::table('products')
-        ->leftJoin('inventory', function ($join) {
-            $join->on('products.id', '=', 'inventory.stockable_id')
-                 ->where('inventory.stockable_type', '=', 'Product');
-        })
-        ->leftJoin('product_types', 'products.product_type_id', '=', 'product_types.id')
-        ->select(
-            'products.id',
-            DB::raw("CONCAT(IFNULL(products.code, 'S/C'), ' - ', products.name) as text"),
-            'products.sale_price',
-            'products.average_cost',
-            DB::raw('IFNULL(inventory.quantity_on_hand, 0) as quantity_on_hand'),
-            'product_types.name as category'
-        );
+    public function searchProducts(Request $request)
+    {
+        $searchTerm = $request->input('q', '');
 
-    if ($searchTerm) {
-        $query->where(function ($sub) use ($searchTerm) {
-            $sub->where('products.name', 'LIKE', "%{$searchTerm}%")
-                ->orWhere('products.code', 'LIKE', "%{$searchTerm}%");
-            if (is_numeric($searchTerm)) {
-                $sub->orWhere('products.id', (int)$searchTerm);
-            }
-        });
+        $query = DB::table('products')
+            ->leftJoin('inventory', function ($join) {
+                $join->on('products.id', '=', 'inventory.stockable_id')
+                    ->where('inventory.stockable_type', '=', 'Product');
+            })
+            ->leftJoin('product_types', 'products.product_type_id', '=', 'product_types.id')
+            ->select(
+                'products.id',
+                // --- LINHA ALTERADA AQUI ---
+                // Adicionamos a quantidade em estoque ao texto que será exibido no Select2.
+                DB::raw("CONCAT(IFNULL(products.code, 'S/C'), ' - ', products.name, ' (Estoque: ', IFNULL(inventory.quantity_on_hand, 0), ')') as text"),
+                'products.sale_price',
+                'products.average_cost',
+                DB::raw('IFNULL(inventory.quantity_on_hand, 0) as quantity_on_hand'),
+                'product_types.name as category'
+            );
+
+        if ($searchTerm) {
+            $query->where(function ($sub) use ($searchTerm) {
+                $sub->where('products.name', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('products.code', 'LIKE', "%{$searchTerm}%");
+                if (is_numeric($searchTerm)) {
+                    $sub->orWhere('products.id', (int)$searchTerm);
+                }
+            });
+        }
+
+        $items = $query->limit(100)->get();
+
+        $grouped = $items
+            ->groupBy('category')
+            ->map(function ($group, $categoryName) {
+                return [
+                    'text'     => $categoryName ?? 'Sem categoria',
+                    'children' => $group->map(function ($item) {
+                        return [
+                            'id'               => $item->id,
+                            'text'             => $item->text,
+                            'sale_price'       => $item->sale_price,
+                            'average_cost'     => $item->average_cost,
+                            'quantity_on_hand' => $item->quantity_on_hand,
+                        ];
+                    })->values()->all(),
+                ];
+            })->values();
+
+        return response()->json(['results' => $grouped]);
     }
-
-    // 2. Executa e agrupa
-    $items = $query->limit(100)->get();
-
-    $grouped = $items
-        ->groupBy('category')
-        ->map(function ($group, $categoryName) {
-            return [
-                'text'     => $categoryName ?? 'Sem categoria',
-                'children' => $group->map(function ($item) {
-                    return [
-                        'id'               => $item->id,
-                        'text'             => $item->text,
-                        'sale_price'       => $item->sale_price,
-                        'average_cost'     => $item->average_cost,
-                        'quantity_on_hand' => $item->quantity_on_hand,
-                    ];
-                })->values()->all(),
-            ];
-        })->values();
-
-    return response()->json(['results' => $grouped]);
-}
-
     /**
      * Busca Itens Diversos para o Select2 com AJAX.
      * VERSÃO CORRIGIDA com LEFT JOIN para incluir itens com estoque zero.

@@ -3,149 +3,434 @@
 @section('title', 'Contas a Pagar')
 
 @section('content')
-<div id="purchasesContent">
-  <style>
-    :root {
-      --terracota: #A0522D;
-      --beige:     #EDE8E0;
-      --danger:    #dc3545;
-      --info:      #0d6efd;
-      --white:     #ffffff;
-    }
+    <div id="purchasesContent">
+        <style>
+            :root {
+                --terracota: #A0522D;
+                --beige: #EDE8E0;
+                --danger: #dc3545;
+                --info: #0d6efd;
+                --white: #ffffff;
+            }
 
-    /* 1) Remove ícone/pseudo‐elemento do DataTables Responsive */
-    #purchasesContent table.dataTable td.dt-control,
-    #purchasesContent table.dataTable th.dt-control {
-      background-image: none !important;
-    }
-    #purchasesContent table.dataTable td.dt-control::before,
-    #purchasesContent table.dataTable th.dt-control::before {
-      content: none !important;
-      display: none !important;
-    }
+            /* 1) Remove ícone/pseudo‐elemento do DataTables Responsive */
+            #purchasesContent table.dataTable td.dt-control,
+            #purchasesContent table.dataTable th.dt-control {
+                background-image: none !important;
+            }
 
-    /* 2) Controle via ícone */
-    #purchasesContent td.dt-control {
-      cursor: pointer;
-      text-align: center;
-      vertical-align: middle;
-    }
-    #purchasesContent td.dt-control i.fas {
-      font-size: 1.3rem;
-      transition: transform .2s, color .2s;
-    }
-    #purchasesContent td.dt-control:hover i.fas {
-      transform: scale(1.2);
-      color: var(--info);
-    }
+            #purchasesContent table.dataTable td.dt-control::before,
+            #purchasesContent table.dataTable th.dt-control::before {
+                content: none !important;
+                display: none !important;
+            }
 
-    /* 3) Remove triângulo da 1ª coluna */
-    #purchasesContent #purchasesTable tbody tr td:first-child,
-    #purchasesContent #purchasesTable tbody tr td:first-child::before {
-      background: none !important;
-      content: none !important;
-    }
+            /* 2) Controle via ícone */
+            #purchasesContent td.dt-control {
+                cursor: pointer;
+                text-align: center;
+                vertical-align: middle;
+            }
 
-    /* estilos de card-tabs terracota/bege */
-    #purchasesContent .card-terracotta.card-tabs > .card-header {
-      border-bottom: none;
-      background-color: var(--terracota);
-      color: var(--white);
-    }
-    #purchasesContent .card-terracotta.card-tabs > .card-header .nav-link {
-      background: transparent;
-      border: 0;
-      color: rgba(240,230,230,.8);
-    }
-    #purchasesContent .card-terracotta.card-tabs > .card-header .nav-link.active {
-      background: var(--beige);
-      color: var(--terracota);
-      border-color: #dee2e6 #dee2e6 var(--beige);
-    }
+            #purchasesContent td.dt-control i.fas {
+                font-size: 1.3rem;
+                transition: transform .2s, color .2s;
+            }
 
-    /* abas via nav-tabs */
-    #purchasesContent .nav-tabs .nav-link {
-      color: rgba(0,0,0,.7);
-      border-color: transparent;
-    }
-    #purchasesContent .nav-tabs .nav-link.active {
-      background-color: var(--terracota);
-      color: var(--white);
-      border-color: var(--terracota);
-    }
+            #purchasesContent td.dt-control:hover i.fas {
+                transform: scale(1.2);
+                color: var(--info);
+            }
 
-    /* botão fechar customizado */
-    #purchasesContent .modal-header .btn-close {
-      width: 1.6rem;
-      height: 1.6rem;
-      background-color: var(--danger);
-      border-radius: .25rem;
-      position: relative;
-    }
-    #purchasesContent .modal-header .btn-close::before {
-      content: "\f00d";
-      font-family: "Font Awesome 6 Free";
-      font-weight: 900;
-      color: var(--white);
-      font-size: 1rem;
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%,-50%);
-    }
-    #purchasesContent .modal-header .btn-close:focus {
-      box-shadow: none;
-    }
+            /* 3) Remove triângulo da 1ª coluna */
+            #purchasesContent #purchasesTable tbody tr td:first-child,
+            #purchasesContent #purchasesTable tbody tr td:first-child::before {
+                background: none !important;
+                content: none !important;
+            }
 
-    /* select2 no modal */
-    #purchasesContent .select2-container--bootstrap-5 .select2-selection--single {
-      min-width: 250px !important;
-    }
-  </style>
+            /* estilos de card-tabs terracota/bege */
+            #purchasesContent .card-terracotta.card-tabs>.card-header {
+                border-bottom: none;
+                background-color: var(--terracota);
+                color: var(--white);
+            }
 
-  <div class="card card-terracotta card-tabs">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <a href="{{ route('admin.purchases.create') }}" class="btn btn-success">
-        <i class="fas fa-plus"></i> Registrar Nova Compra
-      </a>
+            #purchasesContent .card-terracotta.card-tabs>.card-header .nav-link {
+                background: transparent;
+                border: 0;
+                color: rgba(240, 230, 230, .8);
+            }
+
+            #purchasesContent .card-terracotta.card-tabs>.card-header .nav-link.active {
+                background: var(--beige);
+                color: var(--terracota);
+                border-color: #dee2e6 #dee2e6 var(--beige);
+            }
+
+            /* abas via nav-tabs */
+            #purchasesContent .nav-tabs .nav-link {
+                color: rgba(0, 0, 0, .7);
+                border-color: transparent;
+            }
+
+            #purchasesContent .nav-tabs .nav-link.active {
+                background-color: var(--terracota);
+                color: var(--white);
+                border-color: var(--terracota);
+            }
+
+            /* botão fechar customizado */
+            #purchasesContent .modal-header .btn-close {
+                width: 1.6rem;
+                height: 1.6rem;
+                background-color: var(--danger);
+                border-radius: .25rem;
+                position: relative;
+            }
+
+            #purchasesContent .modal-header .btn-close::before {
+                content: "\f00d";
+                font-family: "Font Awesome 6 Free";
+                font-weight: 900;
+                color: var(--white);
+                font-size: 1rem;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            #purchasesContent .modal-header .btn-close:focus {
+                box-shadow: none;
+            }
+
+            /* select2 no modal */
+            #purchasesContent .select2-container--bootstrap-5 .select2-selection--single {
+                min-width: 250px !important;
+            }
+        </style>
+        <style>
+            :root {
+                --terracota: #A0522D;
+                --beige: #EDE8E0;
+            }
+
+            /* Container do modal */
+            #purchaseDetailsModal .modal-content {
+                border: none;
+                border-radius: .5rem;
+                overflow: hidden;
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            }
+
+            /* Cabeçalho */
+            #purchaseDetailsModal .modal-header {
+                background-color: var(--terracota);
+                color: #fff;
+                border-bottom: none;
+                padding: 1rem 1.5rem;
+            }
+
+            #purchaseDetailsModal .modal-header .btn-close {
+                filter: invert(1);
+            }
+
+            /* Corpo */
+            #purchaseDetailsModal .modal-body {
+                background-color: #fff;
+                padding: 1.5rem;
+            }
+
+            /* Informações gerais */
+            #purchaseDetailsGeneral .col-md-4 {
+                margin-bottom: 1rem;
+            }
+
+            /* Tabela */
+            #purchaseDetailsModal .table-responsive {
+                margin-top: 1rem;
+            }
+
+            #purchaseDetailsModal .table thead {
+                background-color: var(--beige);
+            }
+
+            /* Rodapé */
+            #purchaseDetailsModal .modal-footer {
+                background-color: #f8f9fa;
+                border-top: none;
+                padding: 1rem 1.5rem;
+            }
+
+            #purchaseDetailsModal .modal-footer .btn {
+                min-width: 140px;
+            }
+        </style>
+        <div class="card card-terracotta card-tabs">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <a href="{{ route('admin.purchases.create') }}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Registrar Nova Compra
+                </a>
+            </div>
+
+            {{-- ABAS PARA FILTRAGEM --}}
+            <div class="card-header p-0 border-bottom-0">
+                <ul class="nav nav-tabs" id="purchaseStatusTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-status="">Todos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-status="Pendente">Pendentes de Recebimento</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-status="Recebido">Recebidos</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card-body">
+                <table id="purchasesTable" class="table table-bordered table-striped w-100">
+                    <thead>
+                        <tr>
+                            <th class="dt-control" style="width:20px;"></th>
+                            <th>ID</th>
+                            <th>Fornecedor</th>
+                            <th>Data da Compra</th>
+                            <th>Vencimento</th>
+                            <th>Valor Total</th>
+                            <th>Status Pagamento</th>
+                            <th>Status Recebimento</th>
+                            <th style="width:120px">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        @push('styles')
+            <style>
+                :root {
+                    --terracota: #A0522D;
+                    --beige: #EDE8E0;
+                }
+
+                /* Container do modal */
+                #purchaseDetailsModal .modal-content {
+                    border: none;
+                    border-radius: .5rem;
+                    overflow: hidden;
+                    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+                }
+
+                /* Cabeçalho */
+                #purchaseDetailsModal .modal-header {
+                    background-color: var(--terracota);
+                    color: #fff;
+                    border-bottom: none;
+                    padding: 1rem 1.5rem;
+                }
+
+                #purchaseDetailsModal .modal-header .btn-close {
+                    filter: invert(1);
+                }
+
+                /* Corpo */
+                #purchaseDetailsModal .modal-body {
+                    background-color: #fff;
+                    padding: 1.5rem;
+                }
+
+                /* Informações gerais */
+                #purchaseDetailsGeneral .col-md-4 {
+                    margin-bottom: 1rem;
+                }
+
+                /* Tabela */
+                #purchaseDetailsModal .table-responsive {
+                    margin-top: 1rem;
+                }
+
+                #purchaseDetailsModal .table thead {
+                    background-color: var(--beige);
+                }
+
+                /* Rodapé */
+                #purchaseDetailsModal .modal-footer {
+                    background-color: #f8f9fa;
+                    border-top: none;
+                    padding: 1rem 1.5rem;
+                }
+
+                #purchaseDetailsModal .modal-footer .btn {
+                    min-width: 140px;
+                }
+
+                /* Estilo geral do modal */
+                #receiveItemsModal .modal-content {
+                    border: none;
+                    border-radius: .5rem;
+                    overflow: hidden;
+                    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+                }
+
+                /* Header terracota */
+                #receiveItemsModal .modal-header {
+                    background-color: var(--terracota);
+                    color: #fff;
+                    border-bottom: none;
+                    padding: 1rem 1.5rem;
+                }
+
+                #receiveItemsModal .modal-header .btn-close {
+                    filter: invert(1);
+                }
+
+                /* Body espaçado */
+                #receiveItemsModal .modal-body {
+                    padding: 1.5rem;
+                    background-color: #fff;
+                }
+
+                /* Tabela responsiva */
+                #receiveItemsModal .table-responsive {
+                    margin-top: 1rem;
+                }
+
+                #receiveItemsModal .table thead {
+                    background-color: var(--beige);
+                }
+
+                /* Footer claro */
+                #receiveItemsModal .modal-footer {
+                    background-color: #f8f9fa;
+                    border-top: none;
+                    padding: 1rem 1.5rem;
+                }
+
+                #receiveItemsModal .modal-footer .btn {
+                    min-width: 120px;
+                }
+            </style>
+        @endpush
+
+        <!-- Modal de Detalhes da Compra -->
+        <div class="modal fade" id="purchaseDetailsModal" tabindex="-1" aria-labelledby="purchaseModalTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+
+                    {{-- CABEÇALHO --}}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="purchaseModalTitle">Detalhes da Compra</h5>
+                    </div>
+
+                    {{-- CORPO --}}
+                    <div class="modal-body">
+                        {{-- Geral --}}
+                        <div id="purchaseDetailsGeneral" class="row text-dark">
+                            {{-- JS preenche:
+               <div class="col-md-4"><strong>Fornecedor:</strong> Shopee</div>
+               <div class="col-md-4"><strong>Data da Compra:</strong> 23/06/2025</div>
+               <div class="col-md-4"><strong>Vencimento:</strong> 23/06/2025</div>
+               <div class="col-md-12 mt-2"><strong>Observações:</strong> Nenhuma</div>
+          --}}
+                        </div>
+
+                        <hr>
+
+                        {{-- Tabela responsiva --}}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr class="text-secondary">
+                                        <th>Item</th>
+                                        <th>Qtd. Pedida</th>
+                                        <th>Qtd. Recebida</th>
+                                        <th>Custo Unit.</th>
+                                        <th>Custo Total</th>
+                                        <th>Obs.</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="purchaseDetailsItemsTbody">
+                                    {{-- JS preenche --}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {{-- RODAPÉ --}}
+                    <div class="modal-footer">
+                        <form id="updatePaymentStatusForm" class="d-flex align-items-center me-auto">
+                            <select id="statusSelect" name="status" class="form-select form-select-sm me-2">
+                                <option value="Pendente">Pendente</option>
+                                <option value="Pago">Pago</option>
+                                <option value="Atrasado">Atrasado</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-info">
+                                <i class="fas fa-sync-alt me-1"></i>Atualizar Status
+                            </button>
+                        </form>
+
+                        <button id="openReceiveModalBtn" type="button" class="btn btn-sm btn-success me-2">
+                            <i class="fas fa-box-open me-1"></i>Registrar Recebimento
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Fechar
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="receiveItemsModal" tabindex="-1" aria-labelledby="receiveModalTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <form id="receiveItemsForm" class="modal-content">
+
+                    {{-- Cabeçalho --}}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="receiveModalTitle">Registrar Recebimento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+
+                    {{-- Corpo --}}
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr class="text-secondary">
+                                        <th>Item</th>
+                                        <th>Qtd. Pedida</th>
+                                        <th>Qtd. Recebida</th>
+                                        <th>Obs.</th>
+                                        <th>#</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="receiveItemsTbody">
+                                    {{-- JS preenche --}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {{-- Rodapé --}}
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-sm btn-success">
+                            <i class="fas fa-check me-1"></i>Confirmar
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Cancelar
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
     </div>
-
-    {{-- ABAS PARA FILTRAGEM --}}
-    <div class="card-header p-0 border-bottom-0">
-      <ul class="nav nav-tabs" id="purchaseStatusTabs" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" href="#" data-status="">Todos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" data-status="Pendente">Pendentes de Recebimento</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" data-status="Recebido">Recebidos</a>
-        </li>
-      </ul>
-    </div>
-
-    <div class="card-body">
-      <table id="purchasesTable" class="table table-bordered table-striped w-100">
-        <thead>
-          <tr>
-            <th class="dt-control" style="width:20px;"></th>
-            <th>ID</th>
-            <th>Fornecedor</th>
-            <th>Data da Compra</th>
-            <th>Vencimento</th>
-            <th>Valor Total</th>
-            <th>Status Pagamento</th>
-            <th>Status Recebimento</th>
-            <th style="width:120px">Ações</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  {{-- Modais seguem iguais aos anteriores --}}
-</div>
 @endsection
 @push('scripts')
     <script>
@@ -391,31 +676,69 @@
             // Abrir o modal de detalhes
             $('#purchasesTable tbody').on('click', '.details-btn', function() {
                 const purchaseId = $(this).data('id');
+
+                // monta a URL a partir da named route (Blade já injeta algo como "/admin/purchases/__ID__/details")
+                const detailsUrlTemplate = "{{ route('admin.purchases.details', ['id' => '__ID__']) }}";
+                const detailsUrl = detailsUrlTemplate.replace('__ID__', purchaseId);
+
                 Swal.fire({
                     title: 'Buscando detalhes...',
                     allowOutsideClick: false,
                     didOpen: () => Swal.showLoading()
                 });
-                $.get(`{{ url('admin/purchases') }}/${purchaseId}/details`).done(data => {
-                    currentPurchaseData = data;
-                    const purchase = data.purchase;
-                    $('#purchaseModalTitle').text(`Detalhes da Compra #${purchase.id}`);
-                    $('#purchaseDetailsGeneral').html(
-                        `<div class="row"><div class="col-md-6"><strong>Fornecedor:</strong> ${purchase.supplier_name || 'N/A'}</div><div class="col-md-3"><strong>Data da Compra:</strong> ${formatDate(purchase.purchase_date)}</div><div class="col-md-3"><strong>Vencimento:</strong> ${formatDate(purchase.due_date)}</div></div><div class="mt-2"><strong>Observações:</strong> ${purchase.notes || 'Nenhuma'}</div>`
-                    );
-                    let itemsHtml = '';
-                    $.each(data.items, (i, item) => {
-                        itemsHtml +=
-                            `<tr><td>${item.name}</td><td>${item.quantity}</td><td><span class="badge bg-info">${item.quantity_received ?? 0}</span></td><td>${formatCurrency(item.unit_cost)}</td><td>${formatCurrency(item.total_cost)}</td><td>${item.notes || ''}</td></tr>`;
+
+                $.get(detailsUrl)
+                    .done(data => {
+                        // fecha o loading
+                        Swal.close();
+
+                        currentPurchaseData = data;
+                        const purchase = data.purchase;
+
+                        // popula título e bloco geral
+                        $('#purchaseModalTitle').text(`Detalhes da Compra #${purchase.id}`);
+                        $('#purchaseDetailsGeneral').html(`
+          <div class="row">
+            <div class="col-md-6"><strong>Fornecedor:</strong> ${purchase.supplier_name || 'N/A'}</div>
+            <div class="col-md-3"><strong>Data da Compra:</strong> ${formatDate(purchase.purchase_date)}</div>
+            <div class="col-md-3"><strong>Vencimento:</strong> ${formatDate(purchase.due_date)}</div>
+          </div>
+          <div class="mt-2"><strong>Observações:</strong> ${purchase.notes || 'Nenhuma'}</div>
+        `);
+
+                        // monta a lista de itens
+                        let itemsHtml = '';
+                        $.each(data.items, (i, item) => {
+                            itemsHtml += `
+            <tr>
+              <td>${item.name}</td>
+              <td>${item.quantity}</td>
+              <td><span class="badge bg-info">${item.quantity_received ?? 0}</span></td>
+              <td>${formatCurrency(item.unit_cost)}</td>
+              <td>${formatCurrency(item.total_cost)}</td>
+              <td>${item.notes || ''}</td>
+            </tr>
+          `;
+                        });
+                        $('#purchaseDetailsItemsTbody').html(itemsHtml);
+
+                        // monta também a action do form de status usando named route
+                        const statusUrlTemplate =
+                            "{{ route('admin.purchases.update-payment-status', ['id' => '__ID__']) }}";
+                        const statusUrl = statusUrlTemplate.replace('__ID__', purchase.id);
+                        $('#updatePaymentStatusForm').attr('action', statusUrl);
+
+                        // seta o select de status e atualiza o botão de recebimento
+                        $('#statusSelect').val(purchase.status).trigger('change');
+                        updateReceiveButtonState(purchase.status, purchase.received_at);
+
+                        // por fim, abre o modal de detalhes
+                        $('#purchaseDetailsModal').modal('show');
+                    })
+                    .fail(() => {
+                        Swal.close();
+                        Swal.fire('Erro!', 'Não foi possível buscar os detalhes.', 'error');
                     });
-                    $('#purchaseDetailsItemsTbody').html(itemsHtml);
-                    $('#updatePaymentStatusForm').attr('action',
-                        `{{ url('admin/purchases') }}/${purchase.id}/update-payment-status`);
-                    $('#statusSelect').val(purchase.status).trigger('change');
-                    updateReceiveButtonState(purchase.status, purchase.received_at);
-                    Swal.close();
-                    $('#purchaseDetailsModal').modal('show');
-                }).fail(() => Swal.fire('Erro!', 'Não foi possível buscar os detalhes.', 'error'));
             });
 
             // Submeter atualização de status de pagamento

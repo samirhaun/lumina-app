@@ -1,8 +1,6 @@
-@extends('admin::layouts.layout')
+<?php $__env->startSection('title', 'Histórico de Vendas'); ?>
 
-@section('title', 'Histórico de Vendas')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         :root {
             --terracota: #A0522D;
@@ -57,7 +55,7 @@
 
     <div class="card card-primary mb-3">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <a href="{{ route('admin.sales.create') }}" class="btn btn-success">
+            <a href="<?php echo e(route('admin.sales.create')); ?>" class="btn btn-success">
                 <i class="fas fa-plus"></i> Registrar Nova Venda
             </a>
         </div>
@@ -91,7 +89,7 @@
     <div class="modal fade" id="saleDetailsModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content rounded-lg shadow">
-                {{-- Cabeçalho --}}
+                
                 <div class="modal-header bg-info text-white border-0">
                     <h5 class="modal-title">
                         <i class="fas fa-shopping-cart me-2 fs-4"></i>
@@ -100,9 +98,9 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
-                {{-- Corpo --}}
+                
                 <div class="modal-body py-4">
-                    {{-- 1. Informações Gerais --}}
+                    
                     <div class="card mb-4">
                         <div class="card-body p-3">
                             <div class="icon-label">
@@ -128,7 +126,7 @@
                         </div>
                     </div>
 
-                    {{-- 2. Itens da Venda --}}
+                    
                     <div class="card mb-4">
                         <div class="card-header bg-primary text-white py-2">
                             <h6 class="mb-0">
@@ -153,7 +151,7 @@
                         </div>
                     </div>
 
-                    {{-- 3. Custos Adicionais --}}
+                    
                     <div class="card mb-4">
                         <div class="card-header bg-info text-white py-2">
                             <h6 class="mb-0"><i class="fas fa-receipt me-2"></i>Custos Adicionais</h6>
@@ -175,7 +173,7 @@
                         </div>
                     </div>
 
-                    {{-- 4. Resumo Financeiro --}}
+                    
                     <div class="card mb-4 border-info">
                         <div class="card-header bg-info text-white py-2">
                             <h6 class="mb-0">
@@ -202,10 +200,10 @@
                     </div>
                 </div>
 
-                {{-- Rodapé --}}
+                
                 <div class="modal-footer justify-content-between border-0 py-3">
                     <form id="updateSaleStatusForm" method="POST" class="d-flex align-items-center gap-2">
-                        @csrf
+                        <?php echo csrf_field(); ?>
                         <label class="mb-0">Status:</label>
                         <select name="status" id="view_statusSelect"
                                 class="form-select form-select-solid form-select-sm rounded-pill" style="width:160px;">
@@ -220,9 +218,9 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
         $(function() {
 
@@ -236,7 +234,7 @@
             // --- Setup e Utilitários ---
             $.ajaxSetup({
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
                 }
             });
             const formatCurrency = v => !isNaN(+v) ?
@@ -261,7 +259,7 @@
             // --- DataTable ---
             const table = $('#salesTable').DataTable({
                 processing: true,
-                ajax: "{{ route('admin.sales.data') }}",
+                ajax: "<?php echo e(route('admin.sales.data')); ?>",
                 columns: [{
                         data: 'id'
                     },
@@ -322,7 +320,7 @@
                     didOpen: () => Swal.showLoading()
                 });
 
-                $.get(`{{ url('admin/sales') }}/${id}`)
+                $.get(`<?php echo e(url('admin/sales')); ?>/${id}`)
                     .done(res => {
                         const o = res.order;
                         const items = res.items;
@@ -374,7 +372,7 @@
 
                         // --- Status form ---
                         $('#updateSaleStatusForm')
-                            .attr('action', `{{ url('admin/sales') }}/${id}/update-status`);
+                            .attr('action', `<?php echo e(url('admin/sales')); ?>/${id}/update-status`);
                         $('#view_statusSelect').val(o.status).trigger('change');
 
                         Swal.close();
@@ -403,4 +401,6 @@
 
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('admin::layouts.layout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Bruno\Documents\lumina-app\lumina-app\Modules/Admin\resources/views/sales/index.blade.php ENDPATH**/ ?>

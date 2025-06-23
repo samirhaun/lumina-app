@@ -57,10 +57,10 @@ class PricingController extends Controller
     }
     public function updateSettings(Request $request)
     {
-        // Pega os dados e os limpa antes de validar
+        // limpa e valida exatamente como antes...
         $data = $request->all();
         $data['global_default_misc_costs'] = $this->cleanNumber($data['global_default_misc_costs'] ?? '0');
-        $data['global_profit_margin'] = $this->cleanNumber($data['global_profit_margin'] ?? '0');
+        $data['global_profit_margin']      = $this->cleanNumber($data['global_profit_margin'] ?? '0');
 
         $validator = Validator::make($data, [
             'global_default_misc_costs' => 'required|numeric|min:0',
@@ -71,8 +71,18 @@ class PricingController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        DB::table('settings')->where('setting_key', 'global_default_misc_costs')->update(['setting_value' => $data['global_default_misc_costs']]);
-        DB::table('settings')->where('setting_key', 'global_profit_margin')->update(['setting_value' => $data['global_profit_margin']]);
+        // aqui usamos updateOrInsert em vez de update
+        DB::table('settings')
+            ->updateOrInsert(
+                ['setting_key'   => 'global_default_misc_costs'],
+                ['setting_value' => $data['global_default_misc_costs'], 'updated_at' => now()]
+            );
+
+        DB::table('settings')
+            ->updateOrInsert(
+                ['setting_key'   => 'global_profit_margin'],
+                ['setting_value' => $data['global_profit_margin'],      'updated_at' => now()]
+            );
 
         return response()->json(['success' => 'Configurações globais salvas com sucesso!']);
     }

@@ -161,10 +161,10 @@
             </div>
 
             {{-- BOTÕES DE SUBMISSÃO --}}
-<div class="d-flex btn-spacing mb-5">
-  <button type="submit" class="btn btn-lg btn-success">Salvar Compra</button>
-  <a href="{{ route('admin.purchases.index') }}" class="btn btn-lg btn-secondary">Cancelar</a>
-</div>
+            <div class="d-flex btn-spacing mb-5">
+                <button type="submit" class="btn btn-lg btn-success">Salvar Compra</button>
+                <a href="{{ route('admin.purchases.index') }}" class="btn btn-lg btn-secondary">Cancelar</a>
+            </div>
         </form>
     </div>
 @endsection
@@ -176,41 +176,63 @@
                 theme: 'bootstrap-5'
             });
 
-            // --- VARIÁVEIS GLOBAIS ---
+            // ====================================================================
+            // NOVO: APLICANDO A MÁSCARA DE MOEDA AO CAMPO DE CUSTO UNITÁRIO
+            // ====================================================================
+            $('#itemUnitCost').mask('000.000.000.000.000,00', {
+                reverse: true
+            });
+
+
+            // ====================================================================
+            // FUNÇÃO DE MOEDA (VERSÃO FINAL E CORRIGIDA)
+            // Usando o método .cleanVal() do próprio plugin de máscara.
+            // ====================================================================
+            const parseCurrency = () => {
+                // .cleanVal() retorna apenas os dígitos do campo. Ex: "R$ 15,00" -> "1500"
+                const valorEmCentavos = $('#itemUnitCost').cleanVal();
+
+                // Se o valor for vazio ou nulo, retorna 0.
+                if (!valorEmCentavos) {
+                    return 0;
+                }
+
+                // Converte os centavos (string) para um número e divide por 100 para ter o valor real.
+                // Ex: parseInt("1500") / 100 = 15.0
+                return parseInt(valorEmCentavos) / 100;
+            };
+
+
             const products = @json($products);
             const productTypes = @json($productTypes);
             const miscItems = @json($miscItems);
             const miscCategories = @json($miscCategories);
-
+            // (Restante das variáveis globais...)
             const itemTypeSelector = $('#itemTypeSelector');
             const productTypeContainer = $('#productTypeSelectorContainer');
             const productTypeSelector = $('#productTypeSelector');
             const miscCategoryContainer = $('#miscCategorySelectorContainer');
             const miscCategorySelector = $('#miscCategorySelector');
             const itemSelector = $('#itemSelector');
-
             let purchaseItems = [];
 
-            // --- LÓGICA DO PRIMEIRO DROPDOWN (TIPO DE ITEM) ---
+
+            // --- LÓGICA DOS DROPDOWNS ---
+            // (Todo o código de lógica dos seletores permanece o mesmo)
             itemTypeSelector.on('change', function() {
                 const selectedType = $(this).val();
-
-                // Esconde ambos os filtros e reseta o seletor de item
                 productTypeContainer.hide();
                 miscCategoryContainer.hide();
                 itemSelector.empty().prop('disabled', true).html(
                     '<option value="">Selecione acima</option>').trigger('change');
-
                 if (selectedType === 'Product') {
                     populateProductTypeSelector();
-                    productTypeContainer.show(); // Mostra o filtro de Tipo de Produto
+                    productTypeContainer.show();
                 } else if (selectedType === 'MiscItem') {
                     populateMiscCategorySelector();
-                    miscCategoryContainer.show(); // Mostra o filtro de Categoria Diversa
+                    miscCategoryContainer.show();
                 }
             });
-
-            // --- LÓGICA DO FILTRO DE TIPO DE PRODUTO ---
             productTypeSelector.on('change', function() {
                 const selectedProductTypeId = $(this).val();
                 if (!selectedProductTypeId) {
@@ -221,8 +243,6 @@
                 const filteredProducts = products.filter(p => p.product_type_id == selectedProductTypeId);
                 populateItemSelector(filteredProducts, 'Product');
             });
-
-            // --- LÓGICA DO FILTRO DE CATEGORIA DIVERSA ---
             miscCategorySelector.on('change', function() {
                 const selectedCategoryId = $(this).val();
                 if (!selectedCategoryId) {
@@ -234,7 +254,6 @@
                 populateItemSelector(filteredItems, 'MiscItem');
             });
 
-            // --- FUNÇÕES AUXILIARES DE POPULAÇÃO ---
             function populateProductTypeSelector() {
                 productTypeSelector.empty().append('<option value="">Selecione um tipo...</option>');
                 $.each(productTypes, function(index, type) {
@@ -261,144 +280,155 @@
                 itemSelector.prop('disabled', false).trigger('change');
             }
 
-            // --- LÓGICA PARA ADICIONAR, REMOVER E SALVAR ITENS ---
-            // (Este código permanece o mesmo da resposta anterior)
-            $('#addItemBtn').on('click', function() {
-                /* ... */
+
+            // --- LÓGICA PARA ADICIONAR ITEM À LISTA ---
+            $("#addItemBtn").on("click", function() {
+                const selectedOption = $("#itemSelector").find("option:selected");
+                const itemId = selectedOption.val();
+                if (!itemId) {
+                    return Swal.fire("Atenção!", "Por favor, selecione um item válido.", "warning");
+                }
+
+                const itemName = selectedOption.text();
+                const itemType = selectedOption.data("type");
+                const quantity = parseInt($("#itemQuantity").val());
+
+                // ====================================================================
+                // ALTERAÇÃO CRÍTICA: Usando a nova função parseCurrency
+                // ====================================================================
+                const unitCost = parseCurrency($("#itemUnitCost").val());
+
+                if (isNaN(quantity) || quantity <= 0 || isNaN(unitCost) || unitCost < 0) {
+                    return Swal.fire("Atenção!", "Preencha a quantidade e o custo unitário corretamente.",
+                        "warning");
+                }
+
+                purchaseItems.push({
+                    id: itemId,
+                    type: itemType,
+                    name: itemName,
+                    quantity: quantity,
+                    unit_cost: unitCost,
+                    total_cost: quantity * unitCost
+                });
+
+                renderItemsTable();
+
+                // Limpa os campos para o próximo item
+                itemTypeSelector.val("").trigger("change");
+                $("#itemQuantity").val(1);
+                $("#itemUnitCost").val("");
             });
 
-            function renderItemsTable() {
-                /* ... */
-            }
-            $('#purchaseItemsTbody').on('click', '.removeItemBtn', function() {
-                /* ... */
-            });
-            $('#purchaseForm').on('submit', function(e) {
-                /* ... */
-            });
 
-            // --- FUNÇÃO PARA RENDERIZAR A TABELA DE ITENS ---
+            // --- FUNÇÕES DE RENDERIZAÇÃO E SUBMISSÃO (com a mesma lógica de antes) ---
             function renderItemsTable() {
                 const tbody = $('#purchaseItemsTbody');
                 tbody.empty();
                 let grandTotal = 0;
-
                 $.each(purchaseItems, function(index, item) {
                     grandTotal += item.total_cost;
-
-                    // --- CORREÇÃO APLICADA AQUI ---
-                    // Usamos a função toLocaleString para formatar a moeda corretamente para pt-BR
                     const unitCostFormatted = item.unit_cost.toLocaleString('pt-BR', {
                         style: 'currency',
                         currency: 'BRL'
                     });
-
                     const totalCostFormatted = item.total_cost.toLocaleString('pt-BR', {
                         style: 'currency',
                         currency: 'BRL'
                     });
-
                     let row = `
-                <tr>
-                    <td>${item.name}</td>
-                    <td>${item.quantity}</td>
-                    <td>${unitCostFormatted}</td>
-                    <td>${totalCostFormatted}</td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-danger removeItemBtn" data-index="${index}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>${item.quantity}</td>
+                            <td>${unitCostFormatted}</td>
+                            <td>${totalCostFormatted}</td>
+                            <td><button type="button" class="btn btn-sm btn-danger removeItemBtn" data-index="${index}"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                    `;
                     tbody.append(row);
                 });
-
-                // Formata também o total geral
                 $('#grandTotal').text(grandTotal.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL'
                 }));
             }
-            $("#addItemBtn").on("click", function() {
-                const t = $("#itemSelector").find("option:selected"),
-                    e = t.val();
-                if (!e) return void Swal.fire("Atenção!", "Por favor, selecione um item válido.",
-                    "warning");
-                const r = t.text(),
-                    o = t.data("type"),
-                    n = parseInt($("#itemQuantity").val()),
-                    a = parseFloat($("#itemUnitCost").val().replace(",", "."));
-                if (isNaN(n) || n <= 0 || isNaN(a) || a < 0) return void Swal.fire("Atenção!",
-                    "Preencha a quantidade e o custo unitário corretamente.", "warning");
-                purchaseItems.push({
-                        id: e,
-                        type: o,
-                        name: r,
-                        quantity: n,
-                        unit_cost: a,
-                        total_cost: n * a
-                    }), renderItemsTable(), itemTypeSelector.val("").trigger("change"), $("#itemQuantity")
-                    .val(1), $("#itemUnitCost").val("")
-            }), $("#purchaseItemsTbody").on("click", ".removeItemBtn", function() {
-                purchaseItems.splice($(this).data("index"), 1), renderItemsTable()
-            }), $("#purchaseForm").on("submit", function(t) {
-                t.preventDefault(), 0 !== purchaseItems.length ? (Swal.fire({
-                    title: "Salvando Compra...",
-                    text: "Por favor, aguarde.",
-                    allowOutsideClick: !1,
-                    didOpen: () => Swal.showLoading()
-                }), $.ajax({
-                    url: "{{ route('admin.purchases.store') }}",
-                    type: "POST",
-                    data: $.param(function(t) {
-                        var e = $(t).serializeArray();
-                        return $.each(purchaseItems, function(t, r) {
-                            e.push({
-                                name: `items[${t}][id]`,
-                                value: r.id
-                            }), e.push({
-                                name: `items[${t}][type]`,
-                                value: r.type
-                            }), e.push({
-                                name: `items[${t}][quantity]`,
-                                value: r.quantity
-                            }), e.push({
-                                name: `items[${t}][unit_cost]`,
-                                value: r.unit_cost
-                            })
-                        }), e
-                    }(this)),
-                    headers: {
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                    },
-                    success: function(t) {
-                        Swal.fire({
-                            icon: "success",
-                            title: "Sucesso!",
-                            text: t.success
-                        }).then(() => {
-                            window.location.href = t.redirect_url
-                        })
-                    },
-                    error: function(t) {
-                        if (Swal.close(), 422 === t.status) {
-                            var e = t.responseJSON.errors,
-                                r = '<ul class="text-start">';
-                            $.each(e, (t, e) => {
-                                r += `<li>${e[0]}</li>`
-                            }), r += "</ul>", Swal.fire({
-                                title: "Erro de Validação",
-                                html: r,
-                                icon: "error"
-                            })
-                        } else Swal.fire("Erro Inesperado!", "Ocorreu um erro no servidor.",
-                            "error")
-                    }
-                })) : Swal.fire("Atenção!", "Você precisa adicionar pelo menos um item à compra.",
-                    "warning")
+
+            $("#purchaseItemsTbody").on("click", ".removeItemBtn", function() {
+                purchaseItems.splice($(this).data("index"), 1);
+                renderItemsTable();
             });
 
+            $('#purchaseForm').on('submit', function(e) {
+                e.preventDefault();
+                if (purchaseItems.length === 0) {
+                    return Swal.fire("Atenção!", "Você precisa adicionar pelo menos um item à compra.",
+                        "warning");
+                }
+                Swal.fire({
+                    title: "Salvando Compra...",
+                    text: "Por favor, aguarde.",
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                let formData = $(this).serializeArray();
+                $.each(purchaseItems, function(i, item) {
+                    formData.push({
+                        name: `items[${i}][id]`,
+                        value: item.id
+                    });
+                    formData.push({
+                        name: `items[${i}][type]`,
+                        value: item.type
+                    });
+                    formData.push({
+                        name: `items[${i}][quantity]`,
+                        value: item.quantity
+                    });
+                    formData.push({
+                        name: `items[${i}][unit_cost]`,
+                        value: item.unit_cost
+                    });
+                });
+
+                $.ajax({
+                    url: "{{ route('admin.purchases.store') }}",
+                    type: "POST",
+                    data: $.param(formData),
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                                icon: "success",
+                                title: "Sucesso!",
+                                text: response.success
+                            })
+                            .then(() => {
+                                window.location.href = response.redirect_url
+                            });
+                    },
+                    error: function(xhr) {
+                        Swal.close();
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+                            let html = '<ul class="text-start">';
+                            $.each(errors, (key, value) => {
+                                html += `<li>${value[0]}</li>`
+                            });
+                            html += "</ul>";
+                            Swal.fire({
+                                title: "Erro de Validação",
+                                html: html,
+                                icon: "error"
+                            });
+                        } else {
+                            Swal.fire("Erro Inesperado!", "Ocorreu um erro no servidor.",
+                                "error");
+                        }
+                    }
+                });
+            });
         });
     </script>
 @endpush
